@@ -2,25 +2,33 @@
 {% block title %}Sign Up{% endblock %}
 {% block main %}
 <div class="min-vh-100 d-flex align-items-center justify-content-center bg-dark bg-opacity-50" style="background-image: url('../../static/img/homepage_img.jpg'); background-size: cover; background-position: center; background-blend-mode: darken;">
-    <div class="text-white " style="width: 100%; max-width: 400px; ">
-        <div class="card bg-dark bg-opacity-75 p-3">
+    <div class="text-white mt-5" style="width: 100%; max-width: 400px; ">
+        <div class="card bg-dark bg-opacity-75 p-4">
             <div class="card-body">
                 <h5 class="card-title text-center text-uppercase text-white mb-4">Sign Up</h5>
-                <form class="py-4" action="{{ url_for('register') }}" method="post">
+                <form class="text-white py-3" action="{{ url_for('register') }}" method="post">
+                    <!-- Name fields -->
+                    <div class="mb-4">                 
+                        <label for="username">Username</label>
+                        <input class="form-control" type="text" name="username" id="username" required>
+                    </div>
+                    <!-- Email and Password fields -->
                     <div class="mb-4">
-                        <label for="username" class="form-label text-white">Username:</label>
-                        <input class="form-control" type="text" name="username"  id="username" required>
+                        <label for="email">Email Address</label>
+                        <input type="email" class="form-control" id="email" name = "email" placeholder="name@example.com" required>
                     </div>
                     <div class="mb-4">
-                        <label for="password" class="form-label text-white">Password:</label>
-                        <input class="form-control"type="password" name="password" id="password" required>
+                        <label for="password">Password</label>
+                        <input class="form-control" type="password" name="password" id="password" required>
                     </div>
                     <div class="mb-4">
-                        <label for="email" class="form-label text-white">Email:</label>
-                        <input class="form-control"type="email" name="email"  id="email" required>
+                        <label for="confirmPassword">Confirm Password</label>
+                        <input type="password" class="form-control" name = "confirmPassword" id="confirmPassword"  required>
                     </div>
                     <div class="msg text-danger" >{{ msg }}</div>
-                    <button type="submit" class="btn btn-outline-light w-100 my-5">Sign Up</button>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-outline-light w-100 mt-4 my-3" >Create Account</button>
+                    </div>
                 </form>
             </div>
         </div>

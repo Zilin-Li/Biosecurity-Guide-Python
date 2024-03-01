@@ -13,12 +13,34 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="/login">Login</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/register">Register</a>
-        </li>
+        {% if isLogin %}
+          <li class="nav-item">
+              <a class="nav-link" href="/dashboard">Welcome {{username}}! </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/profile">profile</a>
+          </li>
+            {% if roleid ==1 %}
+              <li class="nav-item">
+                <a class="nav-link" href="/admin/dashboard">adminpage</a>
+              </li>
+            {%elif roleid==2%}
+            <li class="nav-item">
+              <a class="nav-link" href="/staff/dashboard">staff</a>
+            </li>
+            {%endif%}
+          <li class="nav-item">
+            <a class="nav-link" href="/logout">Logout</a>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="/login">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/register">Register</a>
+          </li>
+        {%endif%}
+        
       </ul>
     </div>
   </div>

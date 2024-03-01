@@ -10,12 +10,16 @@ from mysql.connector import FieldType
 from .. import connect  
 from flask_hashing import Hashing
 from flask import session
-from datetime import datetime
+from datetime import datetime, date
+import secrets
+import random
 
 @app.route("/admin/dashboard")
 def admin_dashboard():
-
-    return render_template("admin/dashboard.html")
+    isLogin=session.get('loggedin')
+    username = session.get('username') 
+    roleid=session.get('roleid')
+    return render_template("admin/dashboard.html",isLogin=isLogin,username=username,roleid=roleid)
 
 @app.route("/admin/profile")
 def admin_profile():
