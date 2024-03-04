@@ -1,0 +1,64 @@
+{% extends "public/home.html" %}
+{% block title%}Horticulture Home{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 sticky-top py-4 vh-100 bg-light d-flex flex-column justify-content-start"> 
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link active" href="/guide"
+            style="border-bottom: 1px solid #dee2e6; padding-bottom: 0.5rem; margin-bottom: 0.5rem;">
+            <i class="bi bi-journal-text mx-1"></i> Horticulture Pest/Disease Guide
+          </a>
+        </li>
+        {% if roleid ==2 or roleid ==1 %}
+          <li class="nav-item">
+            <a class="nav-link" href="/" style="border-bottom: 1px solid #dee2e6; padding-bottom: 0.5rem; margin-bottom: 0.5rem;">
+                Guide Management
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/" style="border-bottom: 1px solid #dee2e6; padding-bottom: 0.5rem; margin-bottom: 0.5rem;">
+                User Management
+            </a>
+          </li>
+          {%endif%}
+          {% if roleid ==1 %}
+            <li class="nav-item">
+              <a class="nav-link" href="#"
+                style="border-bottom: 1px solid #dee2e6; padding-bottom: 0.5rem; margin-bottom: 0.5rem;"
+                data-bs-toggle="collapse" data-bs-target="#staffSubmenu" aria-expanded="false">
+                Staff Management <i class="bi bi-chevron-down ms-3"></i>
+              </a>
+              <div class="collapse" id="staffSubmenu">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li><a href="/" class="nav-link ms-4">- Staff </a></li>
+                  <li><a href="/" class="nav-link ms-4">- Position </a></li>
+                  <li><a href="/" class="nav-link ms-4">- Department </a></li>
+                </ul>
+              </div>
+            </li>
+          
+          {%endif%}
+        </ul>
+    </div>
+
+        <!-- Right Content Section -->
+    <div class="col-md-10">
+      <div class="container mt-5 ">
+        {% block mainRight %}            
+              <div class="container mt-5 ">
+                {% block rightHeader %}           
+                {% endblock %}  
+                {% block rightContent %}
+                {% endblock %}  
+              </div>
+        {% endblock %} 
+      </div>   
+    </div>
+{% endblock %}    
+
+
+
+

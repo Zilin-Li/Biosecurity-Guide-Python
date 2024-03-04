@@ -1,53 +1,7 @@
 {% extends "base.html" %}
 {% block title%}Horticulture Home{% endblock %}
 
-{% block navbar %}
-<nav class="navbar navbar-expand-lg navbar-dark bg-success fixed-top">
-  <div class="container-fluid">
-    <!-- Company name (Horticulture theme) -->
-    <a class="navbar-brand fw-bold" href="/">Green Thumb Nursery</a>
-    <!-- Toggler/collapsible Button -->
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        {% if isLogin %}
-          <li class="nav-item">
-              <a class="nav-link" href="/dashboard">Welcome {{username}}! </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/profile">profile</a>
-          </li>
-            {% if roleid ==1 %}
-              <li class="nav-item">
-                <a class="nav-link" href="/admin/dashboard">adminpage</a>
-              </li>
-            {%elif roleid==2%}
-            <li class="nav-item">
-              <a class="nav-link" href="/staff/dashboard">staff</a>
-            </li>
-            {%endif%}
-          <li class="nav-item">
-            <a class="nav-link" href="/logout">Logout</a>
-          </li>
-        {% else %}
-          <li class="nav-item">
-            <a class="nav-link" href="/login">Login</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/register">Register</a>
-          </li>
-        {%endif%}
-        
-      </ul>
-    </div>
-  </div>
-</nav>
-{% endblock %}
-
-{% block main %}
+{% block content %}
 <div class="d-flex align-items-center justify-content-center text-white text-center vh-100" style="
     background-image: url('../../static/img/homepage_img.jpg');
     background-size: cover;
@@ -58,4 +12,5 @@
     <p class="lead">Your one-stop shop for all horticulture needs.</p>
   </div>
 </div>
+
 {% endblock %}

@@ -16,9 +16,12 @@ import random
 
 @app.route("/admin/dashboard")
 def admin_dashboard():
+    
     isLogin=session.get('loggedin')
     username = session.get('username') 
     roleid=session.get('roleid')
+    if roleid != 1:
+        return redirect( url_for('home'))
     return render_template("admin/dashboard.html",isLogin=isLogin,username=username,roleid=roleid)
 
 @app.route("/admin/profile")

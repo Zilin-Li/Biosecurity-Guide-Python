@@ -4,6 +4,7 @@ from flask import  render_template
 from flask import request
 from flask import redirect
 from flask import url_for
+from flask import flash
 import re
 import mysql.connector
 from mysql.connector import FieldType
@@ -192,17 +193,71 @@ def public_dashboard():
     # account='12345'
     isLogin=session.get('loggedin')
     username = session.get('username')
-    userid = session.get('id')
+    # userid = session.get('id')
     roleid=session.get('roleid')
     print(session['id'])
-    return render_template('public/public_dashboard.html',isLogin =isLogin,username=username, userid=userid,roleid=roleid)
+    return redirect( url_for('guide'))
 
-@app.route("/profile")
-def profile():
+@app.route("/profile/edit_profile")
+def edit_profile():
+    # account='12345'
+    isLogin=session.get('loggedin')
+    username = session.get('username')
+    userid = session.get('id')
+    roleid=session.get('roleid')
+    query = """
+        SELECT 
+            u.username, 
+            IFNULL(u.first_name, '') AS first_name ,
+            IFNULL(u.last_name,  '') AS last_name,
+            u.email, 
+            IFNULL(u.phone, '') AS phone, 
+            DATE_FORMAT(u.join_date, '%Y-%m-%d') AS formatted_join_date, 
+            h.horticulturalist_id, 
+            IFNULL(h.address,'') AS address
+        FROM 
+            User u
+        JOIN 
+            Horticulturalist h ON u.id = h.user_id
+        WHERE 
+            u.id = %s;
+    """
+    connection = getCursor()
+    connection.execute(query, (userid,))
+    user_profile = connection.fetchone()
+
+    print(user_profile[0])
+    return render_template('public/editProfile.html',isLogin =isLogin,username=username,roleid=roleid,user_profile=user_profile)
+
+@app.route('/profile/edit_profile/submit', methods=['POST'])
+def submit_edit():
+    first_name=request.form['first_name']
+    last_name=request.form['last_name']
+    phone=request.form['phone']
+    address=request.form['address']
+
+    
+
+
+    flash("The user has been deleted.","success")
+
+    return redirect(url_for('edit_profile'))
+@app.route("/profile/change_password")
+def change_password():
     # account='12345'
     isLogin=session.get('loggedin')
     username = session.get('username')
     userid = session.get('id')
     roleid=session.get('roleid')
     print(session['id'])
-    return render_template('public/public_dashboard.html',isLogin =isLogin,username=username,roleid=roleid)
+    return render_template('public/changePassword.html',isLogin =isLogin,username=username,roleid=roleid)
+
+@app.route("/guide")
+def guide():
+    # account='12345'
+    isLogin=session.get('loggedin')
+    username = session.get('username')
+    userid = session.get('id')
+    roleid=session.get('roleid')
+    print(session['id'])
+    return render_template('public/guide.html',isLogin =isLogin,username=username,roleid=roleid)

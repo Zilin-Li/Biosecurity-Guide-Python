@@ -14,8 +14,13 @@ from datetime import datetime
 
 @app.route("/staff/dashboard")
 def staff_dashboard():
+    isLogin=session.get('loggedin')
+    username = session.get('username') 
+    roleid=session.get('roleid')
+    if roleid != 2:
+        return redirect( url_for('home'))
     
-    return render_template("staff/dashboard.html")
+    return render_template("staff/dashboard.html",isLogin=isLogin,username=username,roleid=roleid)
 
 @app.route("/staff/profile")
 def staff_profile():

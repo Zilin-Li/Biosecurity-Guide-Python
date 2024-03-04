@@ -1,0 +1,66 @@
+{% extends "public/dashboard.html" %}
+
+{% block mainRight %}
+  {% block rightHeader %}
+    <h2 class="mb-4">Eidt Profile</h2>
+  {% endblock %}  
+  {% block rightContent %}
+    <div class="container mt-3">
+      <form>
+        <!-- First Row: Username and Email -->
+        <div class="row mb-3">
+          <div class="col">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" id="username" class="form-control" placeholder="Username" value="{{user_profile[0]}}" disabled>
+          </div>
+          <div class="col">
+            <label for="email" class="form-label">Email address</label>
+            <input type="email" id="email" class="form-control" placeholder="Email address" value="{{user_profile[3]}}" disabled>
+          </div>
+        </div>
+        <!-- Second Row: Horticulturalist ID and Join Date -->
+        <div class="row mb-3">
+          <div class="col">
+            <label for="horticulturalist_id" class="form-label">Horticulturalist ID</label>
+            <input type="text" id="horticulturalist_id" class="form-control" value="{{user_profile[6]}}" disabled>
+          </div>
+          <div class="col">
+            <label for="join_date" class="form-label">Join Date</label>
+            <input type="text" id="join_date" class="form-control" value="{{user_profile[5]}}" disabled>
+          </div>
+        </div>
+        <!-- Third Row: First Name and Last Name -->
+        <div class="row mb-3">
+          <div class="col">
+            <label for="first_name" class="form-label">First Name</label>
+            <input type="text" id="first_name" name="first_name"  class="form-control" placeholder="First Name" value="{{user_profile[1]}}" >
+          </div>
+          <div class="col">
+            <label for="last_name" class="form-label">Last Name</label>
+            <input type="text" id="last_name" name="last_name" class="form-control" placeholder="Last Name" value="{{user_profile[2]}}" >
+          </div>
+        </div>
+        <!-- Fourth Row: Phone -->
+        <div class="row mb-3">
+          <div class="col">
+            <label for="phone" class="form-label">Phone</label>
+            <input type="tel" id="phone" name="phone" class="form-control" placeholder="Phone Number" value="{{user_profile[4]}}"  >
+          </div>
+        </div>
+        <!-- Fifth Row: Address -->
+        <div class="row mb-3">
+          <div class="col">
+            <label for="address" class="form-label">Address</label>
+            <input type="text" id="address"  name="address" class="form-control" placeholder="Full address here" value="{{user_profile[7]}}">
+          </div>
+        </div>
+        <!-- Submit Button -->
+        <div class="row ">
+          <div class="col my-3">
+            <button type="submit" class="btn btn-primary">Update Profile</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  {% endblock %}  
+{% endblock %}
