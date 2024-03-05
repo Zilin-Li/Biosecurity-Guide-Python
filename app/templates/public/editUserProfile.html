@@ -6,7 +6,7 @@
   {% endblock %}  
   {% block rightContent %}
     <div class="container mt-3">
-      <form>
+      <form action="{{ url_for('update_user_profile') }}" method="post">
         <!-- First Row: Username and Email -->
         <div class="row mb-3">
           <div class="col">
@@ -33,25 +33,25 @@
         <div class="row mb-3">
           <div class="col">
             <label for="first_name" class="form-label">First Name</label>
-            <input type="text" id="first_name" name="first_name"  class="form-control" placeholder="First Name" value="{{user_profile[1]}}" >
+            <input type="text" id="first_name" name="first_name"  class="form-control" placeholder="First Name" value="{{user_profile[1]}}" maxlength="50" pattern="[A-Za-z]+" >
           </div>
           <div class="col">
             <label for="last_name" class="form-label">Last Name</label>
-            <input type="text" id="last_name" name="last_name" class="form-control" placeholder="Last Name" value="{{user_profile[2]}}" >
+            <input type="text" id="last_name" name="last_name" class="form-control" placeholder="Last Name" value="{{user_profile[2]}}" maxlength="50" pattern="[A-Za-z]+">
           </div>
         </div>
         <!-- Fourth Row: Phone -->
         <div class="row mb-3">
           <div class="col">
             <label for="phone" class="form-label">Phone</label>
-            <input type="tel" id="phone" name="phone" class="form-control" placeholder="Phone Number" value="{{user_profile[4]}}"  >
+            <input type="tel" id="phone" name="phone" class="form-control" placeholder="Phone Number" value="{{user_profile[4]}}" pattern="[0-9]+" maxlength="20">
           </div>
         </div>
         <!-- Fifth Row: Address -->
         <div class="row mb-3">
           <div class="col">
             <label for="address" class="form-label">Address</label>
-            <input type="text" id="address"  name="address" class="form-control" placeholder="Full address here" value="{{user_profile[7]}}">
+            <input type="text" id="address"  name="address" class="form-control" placeholder="Full address here" value="{{user_profile[7]}}" maxlength="255">
           </div>
         </div>
         <!-- Submit Button -->

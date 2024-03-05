@@ -48,126 +48,136 @@ def home():
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
+    isLogin=session.get('loggedin')
+    if not isLogin:
      # Output message if something goes wrong...
-    msg = ''
-    # Check if "username" and "password" POST requests exist (user submitted form)
-    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
-        # Create variables for easy access
-        username = request.form['username']
-        user_password = request.form['password']
-        # Check if account exists using MySQL
-        query = """
-        SELECT 
-            u.id, 
-            u.username, 
-            u.hashed_password, 
-            u.salt, 
-            u.role_id 
-        FROM 
-            User u
-        WHERE username = %s;
-            """ 
-        cursor = getCursor()
-        cursor.execute(query, (username,))
-        # Fetch one record and return result
-        account = cursor.fetchone()
-        if account is not None:
-            password = account[2]
-            if hashing.check_value(password, user_password, salt=account[3]):
-            # If account exists in accounts table 
-            # Create session data, we can access this data in other routes
-                session['loggedin'] = True
-                session['id'] = account[0]
-                session['username'] = account[1]
-                session['roleid'] = account[4]
+        msg = ''
+        # Check if "username" and "password" POST requests exist (user submitted form)
+        if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
+            # Create variables for easy access
+            username = request.form['username']
+            user_password = request.form['password']
+            # Check if account exists using MySQL
+            query = """
+            SELECT 
+                u.id, 
+                u.username, 
+                u.hashed_password, 
+                u.salt, 
+                u.role_id 
+            FROM 
+                User u
+            WHERE username = %s;
+                """ 
+            cursor = getCursor()
+            cursor.execute(query, (username,))
+            # Fetch one record and return result
+            account = cursor.fetchone()
+            cursor.close()
+            if account is not None:
+                password = account[2]
+                if hashing.check_value(password, user_password, salt=account[3]):
+                # If account exists in accounts table 
+                # Create session data, we can access this data in other routes
+                    session['loggedin'] = True
+                    session['id'] = account[0]
+                    session['username'] = account[1]
+                    session['roleid'] = account[4]
 
-                username = session.get('username')
-                userid = session.get('id')
-                if account[4] == 1:
-                    return redirect( url_for('admin_dashboard'))                  
-                elif account[4] == 2:   
-                    return redirect( url_for('staff_dashboard'))
-                elif account[4] == 3:   
-                    return redirect( url_for('public_dashboard'))
-                          
+                    username = session.get('username')
+                    userid = session.get('id')
+                    if account[4] == 1:
+                        return redirect( url_for('admin_dashboard'))                  
+                    elif account[4] == 2:   
+                        return redirect( url_for('staff_dashboard'))
+                    elif account[4] == 3:   
+                        return redirect( url_for('public_dashboard'))
+                            
+                else:
+                    #password incorrect
+                    msg = 'Incorrect password!'             
             else:
-                 #password incorrect
-                msg = 'Incorrect password!'             
-        else:
-            # Account doesnt exist or username incorrect
-            msg = 'Incorrect username'
-    # Show the login form with message (if any)   
-    return render_template('public/login.html', msg=msg)
-
+                # Account doesnt exist or username incorrect
+                msg = 'Incorrect username'
+        # Show the login form with message (if any)   
+        return render_template('public/login.html', msg=msg)
+    else:
+         return redirect(url_for('home'))
 @app.route("/register", methods=['GET', 'POST'])
 def register():
+    isLogin=session.get('loggedin')
+    if not isLogin:
     # Output message if something goes wrong...
-    msg = ''
-    # Check if "username", "password" and "email" POST requests exist (user submitted form)
-    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form and 'confirmPassword'in request.form:
-        # Create variables for easy access
-        username = request.form['username']
-        password = request.form['password']
-        confirm_password = request.form['confirmPassword']
-        email = request.form['email']
-        # Check if account exists using MySQL
-        query = """
-        SELECT 
-            u.username, 
-            u.email
-        FROM 
-            User u
-        WHERE username = %s
-            OR u.email = %s;;
-            """ 
-        cursor = getCursor()
-        cursor.execute(query, (username,email,))
-        account = cursor.fetchone()
-        # msg = account
-        # If account exists show error and validation checks
-        if account:
-            if account[0]== username:
-                msg = 'Account already exists!'
-            elif account[1] == email:
-                msg = 'Email already exists!'
-        elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
-            msg = 'Invalid email address!'
-        elif not re.match(r'^[A-Za-z0-9]+$', username):
-            msg = 'Username must contain only characters and numbers!'
-        elif password !=confirm_password:
-             msg = 'Password confirmation failed.!'
-        elif not username or not password or not confirm_password or not email :
+        msg = ''
+        # Check if "username", "password" and "email" POST requests exist (user submitted form)
+        if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form and 'confirmPassword'in request.form:
+            # Create variables for easy access
+            username = request.form['username']
+            password = request.form['password']
+            confirm_password = request.form['confirmPassword']
+            email = request.form['email']
+            # Check if account exists using MySQL
+            query = """
+            SELECT 
+                u.username, 
+                u.email
+            FROM 
+                User u
+            WHERE username = %s
+                OR u.email = %s;;
+                """ 
+            cursor = getCursor()
+            cursor.execute(query, (username,email,))
+            account = cursor.fetchone()
+            
+            # msg = account
+            # If account exists show error and validation checks
+            if account:
+                if account[0]== username:
+                    msg = 'Account already exists!'
+                elif account[1] == email:
+                    msg = 'Email already exists!'
+            elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
+                msg = 'Invalid email address!'
+            elif not re.match(r'^[A-Za-z0-9]+$', username):
+                msg = 'Username must contain only characters and numbers!'
+            elif password !=confirm_password:
+                msg = 'Password confirmation failed.!'
+            elif not username or not password or not confirm_password or not email :
+                msg = 'Please fill out the form!'
+            else:
+                #Automatic salt generation
+                random_text = secrets.token_hex(16)
+                # Set default user profile
+                first_name = None
+                last_name = None
+                phone = None
+                join_date =datetime.now()
+                role_id = 3
+                status = 1
+                # Automatically generate a user id
+                horticulturalist_id = generate_user_num('HORT')
+                # Account doesnt exists and the form data is valid, now insert new account into accounts table
+                hashed = hashing.hash_value(password, salt=random_text)
+                cursor.execute('INSERT INTO user VALUES (NULL,%s,%s, %s, %s, %s, %s,%s, %s, %s, %s)', (username, hashed, random_text, first_name, last_name, email, phone, join_date, role_id, status))
+                user_id = dbconn.lastrowid
+                cursor.execute('''
+                    INSERT INTO Horticulturalist (user_id, horticulturalist_id) 
+                        VALUES (%s, %s)
+                    ''', (user_id, horticulturalist_id))
+                connection.commit()
+                cursor.close()
+                msg = 'You have successfully registered!'
+                # msg =horticulturalist_id
+                # return redirect( url_for('login'))
+        elif request.method == 'POST':
+            # Form is empty... (no POST data)
             msg = 'Please fill out the form!'
-        else:
-            #Automatic salt generation
-            random_text = secrets.token_hex(16)
-            # Set default user profile
-            first_name = None
-            last_name = None
-            phone = None
-            join_date =datetime.now()
-            role_id = 3
-            status = 1
-            # Automatically generate a user id
-            horticulturalist_id = generate_user_num('HORT')
-            # Account doesnt exists and the form data is valid, now insert new account into accounts table
-            hashed = hashing.hash_value(password, salt=random_text)
-            cursor.execute('INSERT INTO user VALUES (NULL,%s,%s, %s, %s, %s, %s,%s, %s, %s, %s)', (username, hashed, random_text, first_name, last_name, email, phone, join_date, role_id, status))
-            user_id = dbconn.lastrowid
-            cursor.execute('''
-                INSERT INTO Horticulturalist (user_id, horticulturalist_id) 
-                    VALUES (%s, %s)
-                ''', (user_id, horticulturalist_id))
-            connection.commit()
-            msg = 'You have successfully registered!'
-            # msg =horticulturalist_id
-            # return redirect( url_for('login'))
-    elif request.method == 'POST':
-        # Form is empty... (no POST data)
-        msg = 'Please fill out the form!'
-    # Show registration form with message (if any)
-    return render_template("public/register.html",msg=msg)
-  
+        # Show registration form with message (if any)
+        return render_template("public/register.html",msg=msg)
+    else:
+         return redirect(url_for('home'))
+
 def generate_user_num(roleName):
     # Gets the year, month, day, hour, second of the current time
     timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
@@ -179,14 +189,17 @@ def generate_user_num(roleName):
 
 @app.route('/logout')
 def logout():
+    isLogin=session.get('loggedin')
+    if isLogin:
     # Remove session data, this will log the user out
-   session.pop('loggedin', False)
-   session.pop('id', None)
-   session.pop('username', None)
-   session.pop('roleid', None)
-   # Redirect to login page
-   return redirect(url_for('home'))
-
+        session.pop('loggedin', False)
+        session.pop('id', None)
+        session.pop('username', None)
+        session.pop('roleid', None)
+        # Redirect to login page
+        return redirect(url_for('home'))
+    else:
+        return redirect(url_for('home'))
 
 @app.route("/dashboard")
 def public_dashboard():
@@ -198,59 +211,126 @@ def public_dashboard():
     print(session['id'])
     return redirect( url_for('guide'))
 
-@app.route("/profile/edit_profile")
-def edit_profile():
-    # account='12345'
+@app.route("/profile/edit_user_profile")
+def edit_user_profile():
     isLogin=session.get('loggedin')
+    roleid=session.get('roleid')
     username = session.get('username')
     userid = session.get('id')
+    if isLogin and roleid == 3:            
+        query = """
+            SELECT 
+                u.username, 
+                IFNULL(u.first_name, '') AS first_name ,
+                IFNULL(u.last_name,  '') AS last_name,
+                u.email, 
+                IFNULL(u.phone, '') AS phone, 
+                DATE_FORMAT(u.join_date, '%Y-%m-%d') AS formatted_join_date, 
+                h.horticulturalist_id, 
+                IFNULL(h.address,'') AS address
+            FROM 
+                User u
+            JOIN 
+                Horticulturalist h ON u.id = h.user_id
+            WHERE 
+                u.id = %s;
+        """
+        cursor = getCursor()
+        cursor.execute(query, (userid,))
+        user_profile = cursor.fetchone()
+
+        return render_template('public/editUserProfile.html',isLogin =isLogin,username=username,roleid=roleid,user_profile=user_profile)
+    # else: 
+        # return render_template('public/editUserProfile.html',isLogin =isLogin,username=username,roleid=roleid,user_profile=user_profile)
+        # 这里应该是判断roleid，然后redirect到staff的profile管理页面
+
+@app.route('/profile/edit_user_profile/submit', methods=['POST'])
+def update_user_profile():
+    isLogin=session.get('loggedin')
     roleid=session.get('roleid')
-    query = """
-        SELECT 
-            u.username, 
-            IFNULL(u.first_name, '') AS first_name ,
-            IFNULL(u.last_name,  '') AS last_name,
-            u.email, 
-            IFNULL(u.phone, '') AS phone, 
-            DATE_FORMAT(u.join_date, '%Y-%m-%d') AS formatted_join_date, 
-            h.horticulturalist_id, 
-            IFNULL(h.address,'') AS address
-        FROM 
-            User u
-        JOIN 
-            Horticulturalist h ON u.id = h.user_id
-        WHERE 
-            u.id = %s;
-    """
-    connection = getCursor()
-    connection.execute(query, (userid,))
-    user_profile = connection.fetchone()
+    if isLogin and roleid == 3:
+        first_name=request.form['first_name']
+        last_name=request.form['last_name']
+        phone=request.form['phone']
+        address=request.form['address']
+        
+        userid = session.get('id')
+        update_user_query="""
+            UPDATE user
+            SET first_name = %s,
+                last_name = %s,
+                phone = %s
+            WHERE id = %s;
+            """
+        update_Hoti_query="""
+        
+            UPDATE Horticulturalist
+            SET address = %s
+            WHERE user_id = %s;
+        """
+        try:
+            cursor = getCursor()
+            cursor.execute(update_user_query, (first_name,last_name,phone,userid,))
+            cursor.execute(update_Hoti_query, (address, userid,))
+            connection.commit()
+            flash("The profile has been updated.","success")#弹出框出问题，需要检查
+            return redirect(url_for('edit_user_profile'))   
+        except Exception as e:
+            print(f"An error occurred: {e}")
+        return redirect(url_for('edit_user_profile'))
+    else:
+        return redirect(url_for('edit_user_profile'))
 
-    print(user_profile[0])
-    return render_template('public/editProfile.html',isLogin =isLogin,username=username,roleid=roleid,user_profile=user_profile)
-
-@app.route('/profile/edit_profile/submit', methods=['POST'])
-def submit_edit():
-    first_name=request.form['first_name']
-    last_name=request.form['last_name']
-    phone=request.form['phone']
-    address=request.form['address']
-
-    
-
-
-    flash("The user has been deleted.","success")
-
-    return redirect(url_for('edit_profile'))
-@app.route("/profile/change_password")
+@app.route("/profile/change_password", methods=['GET', 'POST'])
+# user,staff and admin can use this function.
 def change_password():
-    # account='12345'
+    # account='12345' 
     isLogin=session.get('loggedin')
-    username = session.get('username')
     userid = session.get('id')
-    roleid=session.get('roleid')
-    print(session['id'])
-    return render_template('public/changePassword.html',isLogin =isLogin,username=username,roleid=roleid)
+    username = session.get('username')
+    roleid=session.get('roleid') 
+    msg = ''
+    if request.method == 'POST' and 'currentPassword' in request.form and 'newPassword' in request.form and 'confirmNewPassword' in request.form:   
+        currentPassword = request.form['currentPassword']
+        newPassword = request.form['newPassword']
+        confirmNewPassword = request.form['confirmNewPassword']
+        # Get the stored password from database
+        get_password_query = """
+            SELECT 
+                u.hashed_password, 
+                u.salt 
+            FROM 
+                User u
+            WHERE id = %s;
+                """ 
+        cursor = getCursor()
+        cursor.execute(get_password_query, (userid,))
+        storedPassword = cursor.fetchone()    
+        if not currentPassword or not newPassword or not confirmNewPassword:
+            msg = 'Please fill out the form!'
+        elif not hashing.check_value(storedPassword[0], currentPassword, salt=storedPassword[1]):
+            msg = 'The current password is incorrect.'
+        elif newPassword != confirmNewPassword:
+            msg = 'Password confirmation failed.!' 
+        else:
+            random_text = secrets.token_hex(16)
+            hashedPassword = hashing.hash_value(newPassword, salt=random_text)
+            msg=hashedPassword
+            update_password_query="""        
+                UPDATE user
+                SET hashed_password = %s,
+                    salt=%s
+                WHERE id = %s;
+            """
+            cursor.execute(update_password_query, (hashedPassword, random_text,userid))
+            connection.commit()
+    elif request.method == 'POST':
+        # Form is empty... (no POST data)
+        msg = 'Please fill out the form!'
+    # Show registration form with message (if any)
+    return render_template('public/changePassword.html',isLogin =isLogin,username=username,roleid=roleid,msg=msg)
+
+ 
 
 @app.route("/guide")
 def guide():
