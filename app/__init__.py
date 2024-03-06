@@ -15,6 +15,9 @@ def get_db_connection():
         database=connect.dbname,
         autocommit=True
     )
-    return connection
+    cursor = connection.cursor()
+    return connection, cursor
 
 from .views import public_views, staff_views, admin_views
+
+

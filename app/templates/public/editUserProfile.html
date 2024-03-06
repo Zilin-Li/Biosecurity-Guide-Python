@@ -19,16 +19,29 @@
           </div>
         </div>
         <!-- Second Row: Horticulturalist ID and Join Date -->
-        <div class="row mb-3">
-          <div class="col">
-            <label for="horticulturalist_id" class="form-label">Horticulturalist ID</label>
-            <input type="text" id="horticulturalist_id" class="form-control" value="{{user_profile[6]}}" disabled>
+        {% if roleid==3 %}
+          <div class="row mb-3">
+            <div class="col">
+              <label for="horticulturalist_id" class="form-label">Horticulturalist ID</label>
+              <input type="text" id="horticulturalist_id" class="form-control" value="{{user_profile[6]}}" disabled>
+            </div>
+            <div class="col">
+              <label for="join_date" class="form-label">Join Date</label>
+              <input type="text" id="join_date" class="form-control" value="{{user_profile[5]}}" disabled>
+            </div>
           </div>
-          <div class="col">
-            <label for="join_date" class="form-label">Join Date</label>
-            <input type="text" id="join_date" class="form-control" value="{{user_profile[5]}}" disabled>
+        {% elif roleid == 1 or  roleid == 2 %}
+          <div class="row mb-3">
+            <div class="col">
+              <label for="horticulturalist_id" class="form-label">Staff ID</label>
+              <input type="text" id="horticulturalist_id" class="form-control" value="{{user_profile[5]}}" disabled>
+            </div>
+            <div class="col">
+              <label for="join_date" class="form-label">Hire Date</label>
+              <input type="text" id="join_date" class="form-control" value="{{user_profile[6]}}" disabled>
+            </div>
           </div>
-        </div>
+        {% endif %}  
         <!-- Third Row: First Name and Last Name -->
         <div class="row mb-3">
           <div class="col">
@@ -43,17 +56,39 @@
         <!-- Fourth Row: Phone -->
         <div class="row mb-3">
           <div class="col">
-            <label for="phone" class="form-label">Phone</label>
+            {% if roleid==3 %}
+              <label for="phone" class="form-label">Phone Number</label>
+            {% elif roleid == 1 or  roleid == 2 %}
+              <label for="phone" class="form-label">Work Phone Number</label>
+            {% endif %}
             <input type="tel" id="phone" name="phone" class="form-control" placeholder="Phone Number" value="{{user_profile[4]}}" pattern="[0-9]+" maxlength="20">
           </div>
-        </div>
-        <!-- Fifth Row: Address -->
-        <div class="row mb-3">
-          <div class="col">
-            <label for="address" class="form-label">Address</label>
-            <input type="text" id="address"  name="address" class="form-control" placeholder="Full address here" value="{{user_profile[7]}}" maxlength="255">
+          <div class="col">       
+              <label for="status" class="form-label">Status</label>
+              <input type="text" id="position" class="form-control" value="{{ 'active' if user_profile[-1] == 1 else 'inactive' }}" disabled>
+
           </div>
         </div>
+        {% if roleid==3 %}
+        <!-- Fifth Row: Address -->
+          <div class="row mb-3">
+            <div class="col">
+              <label for="address" class="form-label">Address</label>
+              <input type="text" id="address"  name="address" class="form-control" placeholder="Full address here" value="{{user_profile[7]}}" maxlength="255">
+            </div>
+          </div>
+        {% elif roleid == 1 or  roleid == 2 %} 
+          <div class="row mb-3">
+            <div class="col">
+              <label for="position" class="form-label">Position</label>
+              <input type="text" id="position" class="form-control" value="{{user_profile[7]}}" disabled>
+            </div>
+            <div class="col">
+              <label for="department" class="form-label">Department</label>
+              <input type="text" id="department" class="form-control" value="{{user_profile[8]}}" disabled>
+            </div>
+          </div>
+        {% endif %}
         <!-- Submit Button -->
         <div class="row ">
           <div class="col my-3">

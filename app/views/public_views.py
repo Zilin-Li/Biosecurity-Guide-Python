@@ -6,9 +6,10 @@ from flask import redirect
 from flask import url_for
 from flask import flash
 import re
-import mysql.connector
+
 from mysql.connector import FieldType
-from .. import connect  
+
+from .. import get_db_connection
 from flask_hashing import Hashing
 from flask import session
 from datetime import datetime, date
@@ -17,27 +18,11 @@ import random
 
 
 
+
 # Change this to your secret key (can be anything, it's for extra protection)
 app.secret_key = 'your secret key'
 hashing = Hashing(app)  #create an instance of hashing
 
-
-dbconn = None
-connection = None
-
-def getCursor():
-    global dbconn
-    global connection
-    # Establishing a database connection
-    connection = mysql.connector.connect(
-        user=connect.dbuser,
-        password=connect.dbpass,
-        host=connect.dbhost,
-        database=connect.dbname,
-        autocommit=True
-    )
-    dbconn = connection.cursor()
-    return dbconn
 
 @app.route("/")
 def home(): 
@@ -69,11 +54,17 @@ def login():
                 User u
             WHERE username = %s;
                 """ 
-            cursor = getCursor()
-            cursor.execute(query, (username,))
-            # Fetch one record and return result
-            account = cursor.fetchone()
-            cursor.close()
+            connection, cursor = get_db_connection()
+            try:
+                cursor.execute(query, (username,))
+                # Fetch one record and return result
+                account = cursor.fetchone()
+            except Exception as e:
+                print(f"An error occurred: {e}")
+            finally:
+                cursor.close()
+                connection.close()
+            
             if account is not None:
                 password = account[2]
                 if hashing.check_value(password, user_password, salt=account[3]):
@@ -102,7 +93,9 @@ def login():
         # Show the login form with message (if any)   
         return render_template('public/login.html', msg=msg)
     else:
-         return redirect(url_for('home'))
+        return redirect(url_for('home'))
+
+
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     isLogin=session.get('loggedin')
@@ -126,10 +119,15 @@ def register():
             WHERE username = %s
                 OR u.email = %s;;
                 """ 
-            cursor = getCursor()
-            cursor.execute(query, (username,email,))
-            account = cursor.fetchone()
-            
+            connection, cursor = get_db_connection()
+            try:
+                cursor.execute(query, (username,email,))
+                account = cursor.fetchone()
+            except Exception as e:
+                print(f"An error occurred: {e}")
+            finally:
+                cursor.close()
+                connection.close()
             # msg = account
             # If account exists show error and validation checks
             if account:
@@ -159,14 +157,20 @@ def register():
                 horticulturalist_id = generate_user_num('HORT')
                 # Account doesnt exists and the form data is valid, now insert new account into accounts table
                 hashed = hashing.hash_value(password, salt=random_text)
-                cursor.execute('INSERT INTO user VALUES (NULL,%s,%s, %s, %s, %s, %s,%s, %s, %s, %s)', (username, hashed, random_text, first_name, last_name, email, phone, join_date, role_id, status))
-                user_id = dbconn.lastrowid
-                cursor.execute('''
-                    INSERT INTO Horticulturalist (user_id, horticulturalist_id) 
-                        VALUES (%s, %s)
-                    ''', (user_id, horticulturalist_id))
-                connection.commit()
-                cursor.close()
+                connection, cursor = get_db_connection()
+                try:
+                    cursor.execute('INSERT INTO user VALUES (NULL,%s,%s, %s, %s, %s, %s,%s, %s, %s, %s)', (username, hashed, random_text, first_name, last_name, email, phone, join_date, role_id, status))
+                    user_id = dbconn.lastrowid
+                    cursor.execute('''
+                        INSERT INTO Horticulturalist (user_id, horticulturalist_id) 
+                            VALUES (%s, %s)
+                        ''', (user_id, horticulturalist_id))
+                    connection.commit()
+                except Exception as e:
+                    print(f"An error occurred: {e}")
+                finally:
+                    cursor.close()
+                    connection.close()
                 msg = 'You have successfully registered!'
                 # msg =horticulturalist_id
                 # return redirect( url_for('login'))
@@ -201,6 +205,7 @@ def logout():
     else:
         return redirect(url_for('home'))
 
+
 @app.route("/dashboard")
 def public_dashboard():
     # account='12345'
@@ -208,52 +213,85 @@ def public_dashboard():
     username = session.get('username')
     # userid = session.get('id')
     roleid=session.get('roleid')
-    print(session['id'])
     return redirect( url_for('guide'))
 
+# Profile - edit & change password
+# Edit profile
 @app.route("/profile/edit_user_profile")
 def edit_user_profile():
     isLogin=session.get('loggedin')
     roleid=session.get('roleid')
     username = session.get('username')
     userid = session.get('id')
-    if isLogin and roleid == 3:            
-        query = """
-            SELECT 
-                u.username, 
-                IFNULL(u.first_name, '') AS first_name ,
-                IFNULL(u.last_name,  '') AS last_name,
-                u.email, 
-                IFNULL(u.phone, '') AS phone, 
-                DATE_FORMAT(u.join_date, '%Y-%m-%d') AS formatted_join_date, 
-                h.horticulturalist_id, 
-                IFNULL(h.address,'') AS address
-            FROM 
-                User u
-            JOIN 
-                Horticulturalist h ON u.id = h.user_id
-            WHERE 
-                u.id = %s;
-        """
-        cursor = getCursor()
-        cursor.execute(query, (userid,))
-        user_profile = cursor.fetchone()
-
+    user_profile = None 
+    if isLogin:
+        connection, cursor = get_db_connection()
+        if roleid == 3:            
+            query = """
+                SELECT 
+                    u.username, 
+                    IFNULL(u.first_name, '') AS first_name ,
+                    IFNULL(u.last_name,  '') AS last_name,
+                    u.email, 
+                    IFNULL(u.phone, '') AS phone, 
+                    DATE_FORMAT(u.join_date, '%Y-%m-%d') AS formatted_join_date, 
+                    h.horticulturalist_id, 
+                    IFNULL(h.address,'') AS address,
+                    u.status
+                FROM 
+                    User u
+                JOIN 
+                    Horticulturalist h ON u.id = h.user_id
+                WHERE 
+                    u.id = %s;
+            """
+            try:
+                cursor.execute(query, (userid,))
+                user_profile = cursor.fetchone()
+            except Exception as e:
+                print(f"An error occurred: {e}")
+        if roleid == 1 or  roleid == 2:
+            query2 = """
+                SELECT
+                    u.username, 
+                    IFNULL(u.first_name, '') AS first_name ,
+                    IFNULL(u.last_name,  '') AS last_name,
+                    u.email, 
+                    IFNULL(u.phone, '') AS phone, 
+                    s.staff_id,
+                    DATE_FORMAT(s.hire_date, '%Y-%m-%d') AS formatted_hire_date, 
+                    p.position_name,
+                    d.department_name,
+                    u.status
+                FROM
+                    User u
+                INNER JOIN Staff s ON u.id = s.user_id
+                INNER JOIN Position p ON s.position_id = p.id
+                INNER JOIN Department d ON s.department_id = d.id
+                WHERE
+                    u.id = %s;
+                """
+            try:
+                cursor.execute(query2, (userid,))
+                user_profile = cursor.fetchone()
+            except Exception as e:
+                print(f"An error occurred: {e}")
+        cursor.close()
+        connection.close()
         return render_template('public/editUserProfile.html',isLogin =isLogin,username=username,roleid=roleid,user_profile=user_profile)
-    # else: 
-        # return render_template('public/editUserProfile.html',isLogin =isLogin,username=username,roleid=roleid,user_profile=user_profile)
-        # 这里应该是判断roleid，然后redirect到staff的profile管理页面
+    else:  
+        return redirect(url_for('login'))
+    
 
 @app.route('/profile/edit_user_profile/submit', methods=['POST'])
 def update_user_profile():
     isLogin=session.get('loggedin')
     roleid=session.get('roleid')
-    if isLogin and roleid == 3:
+    if isLogin:
+        connection, cursor = get_db_connection()
         first_name=request.form['first_name']
         last_name=request.form['last_name']
         phone=request.form['phone']
-        address=request.form['address']
-        
         userid = session.get('id')
         update_user_query="""
             UPDATE user
@@ -261,27 +299,35 @@ def update_user_profile():
                 last_name = %s,
                 phone = %s
             WHERE id = %s;
-            """
+            """  
         update_Hoti_query="""
-        
-            UPDATE Horticulturalist
-            SET address = %s
-            WHERE user_id = %s;
-        """
-        try:
-            cursor = getCursor()
-            cursor.execute(update_user_query, (first_name,last_name,phone,userid,))
-            cursor.execute(update_Hoti_query, (address, userid,))
-            connection.commit()
-            flash("The profile has been updated.","success")#弹出框出问题，需要检查
-            return redirect(url_for('edit_user_profile'))   
-        except Exception as e:
-            print(f"An error occurred: {e}")
+                UPDATE Horticulturalist
+                SET address = %s
+                WHERE user_id = %s;
+            """ 
+        if roleid == 3:    
+            address=request.form['address']           
+            try:
+                cursor.execute(update_user_query, (first_name,last_name,phone,userid,)) 
+                cursor.execute(update_Hoti_query, (address, userid,))
+                connection.commit()
+                flash("The profile has been updated.","success")#弹出框出问题，需要检查        
+            except Exception as e:
+                print(f"An error occurred: {e}")
+        elif roleid == 1 or  roleid == 2:
+            try:
+                cursor.execute(update_user_query, (first_name,last_name,phone,userid,)) 
+                connection.commit()
+                flash("The profile has been updated.","success")#弹出框出问题，需要检查
+            except Exception as e:
+                print(f"An error occurred: {e}")
+        cursor.close()
+        connection.close()    
         return redirect(url_for('edit_user_profile'))
     else:
-        return redirect(url_for('edit_user_profile'))
+        return redirect(url_for('login'))
 
-@app.route("/profile/change_password", methods=['GET', 'POST'])
+@app.route("/profile/change_password", methods=['GET','POST'])
 # user,staff and admin can use this function.
 def change_password():
     # account='12345' 
@@ -303,9 +349,12 @@ def change_password():
                 User u
             WHERE id = %s;
                 """ 
-        cursor = getCursor()
-        cursor.execute(get_password_query, (userid,))
-        storedPassword = cursor.fetchone()    
+        connection, cursor = get_db_connection()
+        try:
+            cursor.execute(get_password_query, (userid,))
+            storedPassword = cursor.fetchone()
+        except Exception as e:
+                print(f"An error occurred: {e}")    
         if not currentPassword or not newPassword or not confirmNewPassword:
             msg = 'Please fill out the form!'
         elif not hashing.check_value(storedPassword[0], currentPassword, salt=storedPassword[1]):
@@ -322,8 +371,13 @@ def change_password():
                     salt=%s
                 WHERE id = %s;
             """
-            cursor.execute(update_password_query, (hashedPassword, random_text,userid))
-            connection.commit()
+            try:
+                cursor.execute(update_password_query, (hashedPassword, random_text,userid))
+                connection.commit()
+            except Exception as e:
+                print(f"An error occurred: {e}")
+        cursor.close()
+        connection.close()
     elif request.method == 'POST':
         # Form is empty... (no POST data)
         msg = 'Please fill out the form!'
