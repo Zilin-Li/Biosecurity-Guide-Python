@@ -1,0 +1,32 @@
+{% extends "public/dashboard.html" %}
+
+{% block mainRight %}
+    {% block rightHeader %}
+    <h2 class="my-5" >User Details</h2>
+    {% endblock %}  
+    {% block rightContent %}
+    <div class="container my-5 ">
+       
+            <div class="card shadow-lg">
+                <div class="card-header bg-success text-white">
+                    <h3 class="my-2">{{ user_details[0][1] }}'s  Profile</h3> <!-- Username -->
+                </div>
+                <div class="card-body bg-light px-5">
+                    <h5 class="card-title" style="font-size: 1.5rem;">{{ user_details[0][2] }}</h5> <!-- Full Name -->
+                    <p class="card-text" style="font-size: 1.2rem;">
+                        <p><strong>Email:</strong> {{ user_details[0][3] }}</p>
+                        <p><strong>Phone:</strong> {{ user_details[0][4] }}</p>
+                        <p><strong>Join Date:</strong> {{ user_details[0][5].strftime('%Y-%m-%d') }}</p>
+                        <p><strong>Status:</strong> <span class="{{ 'text-success' if user_details[0][6] == 1 else 'text-danger' }}">{{ 'Active' if user_details[0][6] == 1 else 'Inactive' }}</span></p>
+                        <p><strong>Horticulturalist ID:</strong> {{ user_details[0][7] }}</p>
+                        <p><strong>Address:</strong> {{ user_details[0][8] }}</p>
+                    </p>
+                </div>
+                <div class="card-footer bg-transparent my-1">
+                    <a href="javascript:history.back()" class="btn btn-outline-success">Back</a>
+                </div>
+            </div>
+        
+    </div>
+    {% endblock %}
+{% endblock %}

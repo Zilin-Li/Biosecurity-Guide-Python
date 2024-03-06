@@ -19,5 +19,3 @@ def get_db_connection():
     return connection, cursor
 
 from .views import public_views, staff_views, admin_views
-
-

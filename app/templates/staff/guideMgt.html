@@ -1,0 +1,16 @@
+{% extends "public/dashboard.html" %}
+
+{% block mainRight %}
+    {% block rightHeader %}
+    <h2 class="mb-4">Staff Dashboard</h2>
+    {% endblock %}  
+    {% block rightContent %}
+        {% if roleid == 1 %}
+        <!-- 显示管理员专有内容和操作 -->
+            <div>Admin专有的内容...</div>
+        {% elif roleid == 2 %}
+            <!-- 显示员工可以看到的内容 -->
+            <div>Staff能看到的内容...</div>
+        {% endif %}
+    {% endblock %}    
+{% endblock %}    

@@ -12,35 +12,45 @@
             <i class="bi bi-journal-text mx-1"></i> Horticulture Pest/Disease Guide
           </a>
         </li>
-        {% if roleid ==2 or roleid ==1 %}
+        {% if roleid == 2 %}  <!-- Staff -->
           <li class="nav-item">
-            <a class="nav-link" href="/" style="border-bottom: 1px solid #dee2e6; padding-bottom: 0.5rem; margin-bottom: 0.5rem;">
+            <a class="nav-link" href="/staff/guide_management" style="border-bottom: 1px solid #dee2e6; padding-bottom: 0.5rem; margin-bottom: 0.5rem;">
                 Guide Management
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/" style="border-bottom: 1px solid #dee2e6; padding-bottom: 0.5rem; margin-bottom: 0.5rem;">
+            <a class="nav-link" href="/staff/user" style="border-bottom: 1px solid #dee2e6; padding-bottom: 0.5rem; margin-bottom: 0.5rem;">
                 User Management
             </a>
           </li>
-          {%endif%}
-          {% if roleid ==1 %}
-            <li class="nav-item">
-              <a class="nav-link" href="#"
-                style="border-bottom: 1px solid #dee2e6; padding-bottom: 0.5rem; margin-bottom: 0.5rem;"
-                data-bs-toggle="collapse" data-bs-target="#staffSubmenu" aria-expanded="false">
-                Staff Management <i class="bi bi-chevron-down ms-3"></i>
-              </a>
-              <div class="collapse" id="staffSubmenu">
-                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                  <li><a href="/" class="nav-link ms-4">- Staff </a></li>
-                  <li><a href="/" class="nav-link ms-4">- Position </a></li>
-                  <li><a href="/" class="nav-link ms-4">- Department </a></li>
-                </ul>
-              </div>
-            </li>
+        {% elif roleid == 1 %}  <!-- Admin -->
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/guide_management" style="border-bottom: 1px solid #dee2e6; padding-bottom: 0.5rem; margin-bottom: 0.5rem;">
+                Guide Management
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/user" style="border-bottom: 1px solid #dee2e6; padding-bottom: 0.5rem; margin-bottom: 0.5rem;">
+                User Management
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#"
+              style="border-bottom: 1px solid #dee2e6; padding-bottom: 0.5rem; margin-bottom: 0.5rem;"
+              data-bs-toggle="collapse" data-bs-target="#staffSubmenu" aria-expanded="false">
+              Staff Management <i class="bi bi-chevron-down ms-3"></i>
+            </a>
+            <div class="collapse" id="staffSubmenu">
+              <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                <li><a href="/" class="nav-link ms-4">- Staff </a></li>
+                <li><a href="/" class="nav-link ms-4">- Position </a></li>
+                <li><a href="/" class="nav-link ms-4">- Department </a></li>
+              </ul>
+            </div>
+          </li>
+        {% endif %}
+
           
-          {%endif%}
         </ul>
     </div>
 

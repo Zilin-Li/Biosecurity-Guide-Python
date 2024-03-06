@@ -1,0 +1,75 @@
+{% extends "public/dashboard.html" %}
+
+{% block mainRight %}
+    {% block rightHeader %}
+    <h2 class="mb-4">Edit User</h2>
+    {% endblock %}
+    {% block rightContent %}
+    <div class="container my-4">
+        <form action="{{ url_for('edit_user') }}" method="post">
+            <div class="row">
+                <!-- Username -->
+                <div class="col-md-6 mb-3">
+                    <label for="username" class="form-label">Username *</label>
+                    <input type="text" class="form-control" id="username" name="username" value="{{user_info[0]}}" disabled>
+                </div>
+                <!-- Email -->
+                <div class="col-md-6 mb-3">
+                    <label for="email" class="form-label">Email *</label>
+                    <input type="email" class="form-control" id="email" name="email"  value="{{user_info[0]}}" disabled>
+                </div>
+            </div>
+            <div class="row">
+                <!-- Password -->
+                <div class="col-md-6 mb-3">
+                    <label for="password" class="form-label">Password *</label>
+                    <input type="password" class="form-control" id="password" name="password">
+                </div>
+                
+                <!-- Confirm Password -->
+                <!-- <div class="col-md-6 mb-3">
+                    <label for="confirmPassword" class="form-label">Confirm Password *</label>
+                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword">
+                </div> -->
+            </div>
+            <div class="row">
+                <!-- First Name -->
+                <div class="col-md-6 mb-3">
+                    <label for="firstName" class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="firstName" name="firstName"  value="{{user_info[0]}}">
+                </div>
+                <!-- Last Name -->
+                <div class="col-md-6 mb-3">
+                    <label for="lastName" class="form-label">Last Name</label>
+                    <input type="text" class="form-control" id="lastName" name="lastName"  value="{{user_info[0]}}">
+                </div>
+            </div>
+            <div class="row">
+                <!-- Phone -->
+                <div class="col-md-6 mb-3">
+                    <label for="phone" class="form-label">Phone</label>
+                    <input type="tel" class="form-control" id="phone" name="phone"  value="{{user_info[0]}}">
+                </div>
+                <!-- Address -->
+                <div class="col-md-6 mb-3">
+                    <label for="address" class="form-label">Address</label>
+                    <input type="text" class="form-control" id="address" name="address"  value="{{user_info[0]}}">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="hortid" class="form-label">Horticulturalist ID</label>
+                    <input type="text" class="form-control" id="hortid" name="hortid" value="{{user_info[0]}}">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="joinDate" class="form-label">Jion Date</label>
+                    <input type="text" class="form-control" id="joinDate" name="joinDate" value="{{user_info[0]}}" disabled >
+                </div>
+
+            </div>
+            <div class="msg text-danger" >{{ msg }}</div>
+            <button type="submit" class="btn btn-primary">Comfirm</button>
+        </form>
+    </div>
+    {% endblock %}
+{% endblock %}

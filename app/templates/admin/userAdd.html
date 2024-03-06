@@ -1,0 +1,63 @@
+{% extends "public/dashboard.html" %}
+
+{% block mainRight %}
+    {% block rightHeader %}
+    <h2 class="mb-4">Add New User</h2>
+    {% endblock %}
+    {% block rightContent %}
+    <div class="container my-4">
+        <form action="{{ url_for('add_user') }}" method="post">
+            <div class="row">
+                <!-- Username -->
+                <div class="col-md-6 mb-3">
+                    <label for="username" class="form-label">Username *</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                </div>
+                <!-- Email -->
+                <div class="col-md-6 mb-3">
+                    <label for="email" class="form-label">Email *</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+            </div>
+            <div class="row">
+                <!-- Password -->
+                <div class="col-md-6 mb-3">
+                    <label for="password" class="form-label">Password *</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <!-- Confirm Password -->
+                <div class="col-md-6 mb-3">
+                    <label for="confirmPassword" class="form-label">Confirm Password *</label>
+                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                </div>
+            </div>
+            <div class="row">
+                <!-- First Name -->
+                <div class="col-md-6 mb-3">
+                    <label for="firstName" class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="firstName" name="firstName">
+                </div>
+                <!-- Last Name -->
+                <div class="col-md-6 mb-3">
+                    <label for="lastName" class="form-label">Last Name</label>
+                    <input type="text" class="form-control" id="lastName" name="lastName">
+                </div>
+            </div>
+            <div class="row">
+                <!-- Phone -->
+                <div class="col-md-6 mb-3">
+                    <label for="phone" class="form-label">Phone</label>
+                    <input type="tel" class="form-control" id="phone" name="phone">
+                </div>
+                <!-- Address -->
+                <div class="col-md-6 mb-3">
+                    <label for="address" class="form-label">Address</label>
+                    <input type="text" class="form-control" id="address" name="address">
+                </div>
+            </div>
+            <div class="msg text-danger" >{{ msg }}</div>
+            <button type="submit" class="btn btn-primary">Add User</button>
+        </form>
+    </div>
+    {% endblock %}
+{% endblock %}

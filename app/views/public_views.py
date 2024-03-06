@@ -6,9 +6,7 @@ from flask import redirect
 from flask import url_for
 from flask import flash
 import re
-
 from mysql.connector import FieldType
-
 from .. import get_db_connection
 from flask_hashing import Hashing
 from flask import session
@@ -160,7 +158,7 @@ def register():
                 connection, cursor = get_db_connection()
                 try:
                     cursor.execute('INSERT INTO user VALUES (NULL,%s,%s, %s, %s, %s, %s,%s, %s, %s, %s)', (username, hashed, random_text, first_name, last_name, email, phone, join_date, role_id, status))
-                    user_id = dbconn.lastrowid
+                    user_id = cursor.lastrowid
                     cursor.execute('''
                         INSERT INTO Horticulturalist (user_id, horticulturalist_id) 
                             VALUES (%s, %s)
@@ -217,7 +215,7 @@ def public_dashboard():
 
 # Profile - edit & change password
 # Edit profile
-@app.route("/profile/edit_user_profile")
+@app.route("/profile/edit_profile")
 def edit_user_profile():
     isLogin=session.get('loggedin')
     roleid=session.get('roleid')
@@ -393,5 +391,5 @@ def guide():
     username = session.get('username')
     userid = session.get('id')
     roleid=session.get('roleid')
-    print(session['id'])
-    return render_template('public/guide.html',isLogin =isLogin,username=username,roleid=roleid)
+    
+    return render_template('public/guidePage.html',isLogin =isLogin,username=username,roleid=roleid)
