@@ -34,12 +34,95 @@
         <div class="mb-3">
             <label for="is_present_in_nz" class="form-label">Present in NZ </label>
                     <select class="form-control" id="is_present_in_nz" name="is_present_in_nz">
-                        <option value="not_in_nz" {% if guide_details.is_present_in_nz == 0 %}selected{% endif %}>No</option>
-                        <option value="in_nz" {% if guide_details.is_present_in_nz == 1 %}selected{% endif %}>Yes</option>
+                        <option value="0" {% if guide_details.is_present_in_nz == 0 %}selected{% endif %}>No</option>
+                        <option value="1" {% if guide_details.is_present_in_nz == 1 %}selected{% endif %}>Yes</option>
                     </select>
           </div>
         <button type="submit" class="btn btn-primary">Update Guide</button>
       </form>
+
+      <div class="container">
+        <!-- Primary Image Section -->
+        <div class="mb-3 mt-5">
+            <h2 for="primaryImage" class="form-label">Primary Image</h2>
+            {% if guide_details.primary_image %}
+            <img src="{{ url_for('static', filename='img/pests/' + guide_details.primary_image) }}" class="img-fluid mb-2" alt="Primary Image">
+            {% endif %}
+            <form action="{{ url_for('guide_image_replace', role = 'admin', biosecurity_id=guide_details.id) }}" method="POST"
+            enctype="multipart/form-data" id="update_primary_image_from">
+                <input type="file" class="form-control" id="primaryImage" name="primary_image">
+                <small class="text-muted">Upload a new primary image to replace the current one.</small>
+                <button type="submit" class="btn btn-primary">update</button>
+            </form>
+        </div>
+
+        <!-- More Images Section -->
+        <h4>More Images</h4>
+        <div id="moreImages" class="d-flex flex-wrap">
+
+            {% for image in guide_details.images %}
+            <div class="m-3 align-items-center">
+                <img src="{{ url_for('static', filename='img/pests/' + image[1]) }}" alt="More Image" style="width: 150px; height: auto;">
+                <div class="mt-1">
+                    <form action="{{ url_for('guide_image_delete', role = 'admin', image_id=image[0]) }}" method="POST">
+                        <input type="hidden" name="biosecurity_id" value="{{ guide_details.id }}">
+                        <button type="submit" class="btn btn-danger btn-sm ms-3">Delete</button>
+                    </form>
+                    <!-- <a href="" class="btn btn-danger btn-sm ms-3">Delete</a> -->
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Add More Images Form -->
+        <div class="container mt-3">
+            <h4>Add More Images</h4>
+            <form action="{{ url_for('guide_image_add', role = 'admin', biosecurity_id=guide_details.id) }}" method="POST" enctype="multipart/form-data" id="add_image_form">
+                <div class="mb-3">
+                    <input type="file" class="form-control" id="newImage" name="new_image" multiple>
+                    <small class="text-muted">You can select multiple files.</small>
+                </div>
+                <button type="submit" class="btn btn-primary">Upload Images</button>
+            </form>
+        </div>
+      </div>
     </div>
+
+    <script>
+        // Add more images form validation
+        document.getElementById('add_image_form').addEventListener('submit', function(e) {
+            const fileInput = document.getElementById('newImage');
+            if (fileInput.files.length === 0) {
+                e.preventDefault();
+                alert('Please select at least one image to upload.');
+            }
+            // check file extension
+            for (let i = 0; i < fileInput.files.length; i++) {
+                const fileName = fileInput.files[i].name;
+                const fileExtension = fileName.split('.').pop();
+                if (fileExtension !== 'jpg' && fileExtension !== 'jpeg' && fileExtension !== 'png' && fileExtension !== 'gif') {
+                    e.preventDefault();
+                    alert('Please select only jpg, jpeg, png or gif files.');
+                    break;
+                }
+            }
+        });
+
+        // Update primary image form validation
+        document.getElementById('update_primary_image_from').addEventListener('submit', function(e) {
+            const fileInput = document.getElementById('primaryImage');
+            if (fileInput.files.length === 0) {
+                e.preventDefault();
+                alert('Please select an image to upload.');
+            }
+            // check file extension
+            const fileName = fileInput.files[0].name;
+            const fileExtension = fileName.split('.').pop();
+            if (fileExtension !== 'jpg' && fileExtension !== 'jpeg' && fileExtension !== 'png' && fileExtension !== 'gif') {
+                e.preventDefault();
+                alert('Please select only jpg, jpeg, png or gif files.');
+            }
+        });
+    </script>
   {% endblock %}
 {% endblock %}
