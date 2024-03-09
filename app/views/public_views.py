@@ -397,5 +397,117 @@ def guide():
     username = session.get('username')
     userid = session.get('id')
     roleid=session.get('roleid')
+    if not isLogin:
+        return redirect(url_for('login'))
+    else:
+        query ="""
+        SELECT
+            b.id,
+            b.common_name,
+            b.is_present_in_nz,
+            bi.image_path
+        FROM
+            Biosecurity b
+        LEFT JOIN
+            BiosecurityImage bi ON b.id = bi.biosecurity_id AND bi.is_primary = 1
+        """
+        connection, cursor = get_db_connection()
+        try:
+            cursor.execute(query)
+            guide_list = cursor.fetchall()
+        except Exception as e:
+                print(f"An error occurred: {e}")
+        finally:
+            cursor.close()
+            connection.close()
+
+        return render_template('public/guidePage.html',isLogin =isLogin,username=username,roleid=roleid,guide_list=guide_list)
+
+# disyplay the detail of the biosecurity
+
+
+@app.route("/guide/<int:biosecurity_id>")
+def guide_detail(biosecurity_id):
+    isLogin = session.get('loggedin')
+    username = session.get('username')
+    userid = session.get('id')
+    roleid = session.get('roleid')
     
-    return render_template('public/guidePage.html',isLogin =isLogin,username=username,roleid=roleid)
+    if not isLogin:
+        return redirect(url_for('login'))
+    
+    biosecurity_query = """
+    SELECT
+        b.id,
+        b.common_name,
+        b.scientific_name,
+        b.key_char,
+        b.biology,
+        b.impact,
+        b.source_url,
+        b.is_present_in_nz
+    FROM
+        Biosecurity b
+    WHERE
+        b.id = %s
+    """
+
+    images_query = """
+    SELECT
+        image_path,
+        description,
+        is_primary
+    FROM
+        BiosecurityImage
+    WHERE
+        biosecurity_id = %s
+    """
+    
+    connection, cursor = get_db_connection()
+    try:
+        cursor.execute(biosecurity_query, (biosecurity_id,))
+        biosecurity_detail = cursor.fetchone()
+        
+        # Fetch all images related to the biosecurity
+        cursor.execute(images_query, (biosecurity_id,))
+        images = cursor.fetchall()
+        print(images)
+        
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        biosecurity_detail = None
+        images = []
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+
+    # get primary image
+    
+    primary_image = None
+    other_images = []
+    if images:
+        primary_image = next((image for image in images if image[2]), None)
+    # get other images
+        other_images = [image for image in images if not image[2]]
+        print(other_images)
+         
+
+    # format data for display
+    if biosecurity_detail:
+        biosecurity_detail = {
+            'id': biosecurity_detail[0],
+            'common_name': biosecurity_detail[1],
+            'scientific_name': biosecurity_detail[2],
+            'key_char': biosecurity_detail[3],
+            'biology': biosecurity_detail[4],
+            'impact': biosecurity_detail[5],
+            'source_url': biosecurity_detail[6],
+            'is_present_in_nz': biosecurity_detail[7],
+            'primary_image': primary_image[0] if primary_image else 'default.jpg',
+            'other_images': other_images    
+        }
+
+    
+    return render_template('public/guideDetail.html', isLogin=isLogin, username=username, roleid=roleid, guide_details=biosecurity_detail)
+

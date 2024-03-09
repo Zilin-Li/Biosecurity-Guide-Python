@@ -176,8 +176,7 @@ def edit_user_submit(user_id):
         status_value = 1 if selected_status == 'Active' else 0
         newPassword = request.form['newpassword']
         confirmPassword = request.form['confirmedPassword']
-        print(newPassword,'===================')
-        print(confirmPassword,'===================')
+       
         connection, cursor = get_db_connection()      
         query = """
             SELECT 
@@ -210,10 +209,10 @@ def edit_user_submit(user_id):
             else:
                 #Automatic salt generation
                 random_text = secrets.token_hex(16)
-                print(random_text, '@@@@@@@@')
+                
                 # Account doesnt exists and the form data is valid, now insert new account into accounts table
                 hashed = hashing.hash_value(newPassword, salt=random_text)
-                print(hashed, '#############')
+                
                 update_user_query="""
                     UPDATE user
                     SET first_name = %s,

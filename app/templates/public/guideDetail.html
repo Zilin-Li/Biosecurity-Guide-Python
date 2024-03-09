@@ -1,0 +1,75 @@
+{% extends "public/dashboard.html" %}
+{% block mainRight %}
+  {% block rightHeader %}
+    <h2 class="mb-4">{{ guide_details.common_name }} - Details</h2>
+  {% endblock %}
+  {% block rightContent %}
+    <div class="container">
+      <!-- Primary Image and Guide Details -->
+      <div class="row mb-4">
+        <div class="col-md-6 d-flex justify-content-start align-items-center">
+          {% if guide_details.primary_image %}
+            <img src="{{ url_for('static', filename='img/pests/' + guide_details.primary_image) }}" class="img-fluid" alt="{{ guide_details.common_name }}" style="width:75%; aspect-ratio: 1/0.8; object-fit:cover">
+          {% else %}
+            <img src="{{ url_for('static', filename='img/homepage_img.jpg') }}" class="img-fluid" alt="Default Image" style="width:75%; aspect-ratio: 1/0.8; object-fit:cover">
+          {% endif %}
+        </div>
+        <div class="col-md-6">
+          <h3>{{ guide_details.common_name }} ({{ guide_details.scientific_name }})</h3>
+          <p><strong>Key Characteristics:</strong> {{ guide_details.key_char }}</p>
+          <p><strong>Biology:</strong> {{ guide_details.biology }}</p>
+          <p><strong>Impact:</strong> {{ guide_details.impact }}</p>
+          <p><strong>Source URL:</strong> <a href="{{ guide_details.source_url }}" target="_blank">Link</a></p>
+        </div>
+      </div>
+      <!-- Additional Images -->
+      <div class="row">
+        <div class="col-12">
+          <h4>More Images</h4>
+        </div>
+        
+       
+          {% for image in guide_details.other_images %}
+            <div class="col-md-4 mb-4">
+              <div class="card">
+                <!-- Use data-bs-toggle and data-bs-target to link to the modal, and data-bs-image to carry the image path -->
+                <img src="{{ url_for('static', filename='img/pests/' + image[0]) }}" class="card-img-top" alt="Additional Image" style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#imageModal" data-bs-image="{{ url_for('static', filename='img/pests/' + image[0]) }}">
+              </div>
+            </div>
+          {% endfor %}
+        
+         
+      </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-body">
+            <img src="" id="modalImage" class="img-fluid">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        var imageModal = document.getElementById('imageModal')
+        imageModal.addEventListener('show.bs.modal', function (event) {
+          // 获取触发事件的元素
+          var image = event.relatedTarget
+          // 提取 data-bs-image 属性的值
+          var imagePath = image.getAttribute('data-bs-image')
+          console.log(imagePath)
+          // 更新 Modal 中的图片
+          var modalImage = imageModal.querySelector('#modalImage')
+          modalImage.src = imagePath
+        })
+      })
+    </script>
+  {% endblock %}
+{% endblock %}
+

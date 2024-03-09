@@ -1,16 +1,45 @@
 {% extends "public/dashboard.html" %}
 
 {% block mainRight %}
-    {% block rightHeader %}
-    <h2 class="mb-4">Staff Dashboard</h2>
-    {% endblock %}  
-    {% block rightContent %}
-        {% if roleid == 1 %}
-        <!-- 显示管理员专有内容和操作 -->
-            <div>Admin专有的内容...</div>
-        {% elif roleid == 2 %}
-            <!-- 显示员工可以看到的内容 -->
-            <div>Staff能看到的内容...</div>
-        {% endif %}
-    {% endblock %}    
-{% endblock %}    
+  {% block rightHeader %}
+    <h2 class="mb-4">Guide Management</h2>
+  {% endblock %}
+  {% block rightContent %}
+    <div class="container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">#ID</th>
+            <th scope="col">Thumbnail</th>
+            <th scope="col">Common Name</th>
+            <th scope="col">Scientific Name</th>
+            <th scope="col">Present in NZ</th>
+            <th scope="col">Options</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for guide in guide_list %}
+            <tr>
+              <th scope="row">{{ guide[0] }}</th>
+                {% if guide[4]  %}
+                    <td><img src="{{url_for('static', filename = 'img/pests/' + guide[4])}}" alt="Thumbnail" style="width: 60px; height: auto;"></td>
+                {% else %}
+                    <td><img src="{{url_for('static', filename = 'img/homepage_img.jpg')}}" alt="Thumbnail" style="width: 60px; height: auto;"></td>
+                  
+                {%endif%}
+              
+              <td>{{ guide[1] }}</td>
+              <td>{{ guide[2] }}</td>
+              <td>{{ guide[3] }}</td>
+              <td>
+                <a href="{{ url_for('guide_edit', role = 'admin', biosecurity_id=guide[0])}}" class="btn btn-sm btn-primary">Edit</a>
+                <a href="{{ url_for('home')}}" class="btn btn-sm btn-danger">Delete</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endblock %}
+{% endblock %}
+
