@@ -115,7 +115,7 @@ def register():
             FROM 
                 User u
             WHERE username = %s
-                OR u.email = %s;;
+                OR u.email = %s;
                 """ 
             connection, cursor = get_db_connection()
             try:
@@ -309,14 +309,14 @@ def update_user_profile():
                 cursor.execute(update_user_query, (first_name,last_name,phone,userid,)) 
                 cursor.execute(update_Hoti_query, (address, userid,))
                 connection.commit()
-                flash("The profile has been updated.","success")#弹出框出问题，需要检查        
+                flash("The profile has been updated.","success")       
             except Exception as e:
                 print(f"An error occurred: {e}")
         elif roleid == 1 or  roleid == 2:
             try:
                 cursor.execute(update_user_query, (first_name,last_name,phone,userid,)) 
                 connection.commit()
-                flash("The profile has been updated.","success")#弹出框出问题，需要检查
+                flash("The profile has been updated.","success")
             except Exception as e:
                 print(f"An error occurred: {e}")
         cursor.close()
@@ -324,6 +324,12 @@ def update_user_profile():
         return redirect(url_for('edit_user_profile'))
     else:
         return redirect(url_for('login'))
+
+
+@app.route('/test')
+def test():
+    flash("Test", 'error')
+    return redirect(url_for('login'))
 
 @app.route("/profile/change_password", methods=['GET','POST'])
 # user,staff and admin can use this function.

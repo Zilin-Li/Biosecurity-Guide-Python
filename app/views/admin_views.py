@@ -122,12 +122,160 @@ def generate_user_num(roleName):
     user_id = f"{roleName}{timestamp}{random_number}"
     return user_id
 
-@app.route('/admin/user/edit', methods=['GET', 'POST'])
-def edit_user():
+@app.route('/admin/user/edit/<int:user_id>', methods=['GET'])
+def edit_user(user_id):
     isLogin=session.get('loggedin')
     username = session.get('username') 
     roleid=session.get('roleid')   
     msg=''
-    user_info = [1]
+    if isLogin:   
+        query = """
+        SELECT 
+            u.id, 
+            u.username, 
+            u.first_name, 
+            u.last_name,
+            u.email,
+            u.phone,
+            u.join_date, 
+            u.status, 
+            h.horticulturalist_id,
+            h.address
+        FROM 
+            User u
+        JOIN 
+            Horticulturalist h ON u.id = h.user_id
+        WHERE u.id = %s;
+            """
+        connection, cursor = get_db_connection()
+        try:
+            cursor.execute(query, (user_id,))
+            user_info = cursor.fetchone()
+        except Exception as e:
+            print(f"An error occurred: {e}")
+        finally:
+            cursor.close()
+            connection.close()
+        return render_template('admin/userEdit.html',isLogin=isLogin,username=username,roleid=roleid,msg=msg,user_info=user_info)
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/admin/user/update/<int:user_id>', methods=['POST'])
+def edit_user_submit(user_id): 
+    isLogin=session.get('loggedin')
+    username = session.get('username') 
+    roleid=session.get('roleid')   
+    msg=''
+    if isLogin:
+        first_name=request.form.get('firstName')
+        last_name=request.form.get('lastName')     
+        phone=request.form.get('phone')
+        address=request.form.get('address')
+        hortid=request.form.get('hortid')
+        selected_status = request.form.get('status')
+        status_value = 1 if selected_status == 'Active' else 0
+        newPassword = request.form['newpassword']
+        confirmPassword = request.form['confirmedPassword']
+        print(newPassword,'===================')
+        print(confirmPassword,'===================')
+        connection, cursor = get_db_connection()      
+        query = """
+            SELECT 
+                h.horticulturalist_id
+            FROM 
+                Horticulturalist h
+            WHERE horticulturalist_id = %s
+            AND user_id != %s
+                ;
+                """ 
+        try:
+            cursor.execute(query, (hortid, user_id,))
+            account = cursor.fetchone()
+        except Exception as e:
+            print(f"An error occurred: {e}")
+        finally:
+            cursor.close()
+            connection.close()
+
+        if account:
+            msg = 'Horticulturalist id already exists!'
+            return redirect(url_for('edit_user',user_id = user_id,msg=msg))
+        
+
+        if newPassword and confirmPassword:
+            if newPassword !=confirmPassword:
+
+                msg = 'Password confirmation failed.!'
+                return redirect(url_for('edit_user',user_id = user_id,msg=msg))
+            else:
+                #Automatic salt generation
+                random_text = secrets.token_hex(16)
+                print(random_text, '@@@@@@@@')
+                # Account doesnt exists and the form data is valid, now insert new account into accounts table
+                hashed = hashing.hash_value(newPassword, salt=random_text)
+                print(hashed, '#############')
+                update_user_query="""
+                    UPDATE user
+                    SET first_name = %s,
+                        last_name = %s,
+                        hashed_password=%s,
+                        salt =%s,
+                        phone = %s,
+                        status = %s
+                    WHERE id = %s;
+                    """  
+                update_Hoti_query="""
+                        UPDATE Horticulturalist
+                        SET address = %s,
+                        horticulturalist_id = %s
+                        WHERE user_id = %s;
+                    """ 
+                connection, cursor = get_db_connection()
+                try:
+                    cursor.execute(update_user_query, (first_name,  last_name, hashed, random_text, phone,  status_value,user_id ))
+                
+                    cursor.execute(update_Hoti_query, (address, hortid, user_id))
+                    connection.commit()
+                except Exception as e:
+                    print(f"An error occurred: {e}")
+                finally:
+                    cursor.close()
+                    connection.close()
+                msg = 'You have successfully update!'
+                # msg =horticulturalist_id
+                # return redirect( url_for('login'))
+        else:
+            update_user_query="""
+                UPDATE user
+                SET first_name = %s,
+                    last_name = %s,
+                    
+                    phone = %s,
+                    status = %s
+                WHERE id = %s;
+                """  
+            update_Hoti_query="""
+                    UPDATE Horticulturalist
+                    SET address = %s,
+                    horticulturalist_id = %s
+                    WHERE user_id = %s;
+                """ 
+            connection, cursor = get_db_connection()
+            try:
+                cursor.execute(update_user_query, (first_name,  last_name, phone,  status_value,user_id ))
+            
+                cursor.execute(update_Hoti_query, (address, hortid, user_id))
+                connection.commit()
+            except Exception as e:
+                print(f"An error occurred: {e}")
+            finally:
+                cursor.close()
+                connection.close()
+            msg = 'You have successfully update!'
+        return redirect(url_for('edit_user',user_id = user_id,msg=msg))
     
-    return render_template("admin/userEdit.html",isLogin=isLogin,username=username,roleid=roleid, msg=msg,user_info=user_info)
+    else:
+        return redirect(url_for('login'))
+    
+
+    
