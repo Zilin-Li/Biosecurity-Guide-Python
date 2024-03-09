@@ -233,7 +233,7 @@ def guide_edit(role,biosecurity_id):
 
 
 
-
+# update guide
 @app.route('/<role>/guide/edit/<int:biosecurity_id>', methods=['POST'])
 def guide_update(role,biosecurity_id):
     isLogin=session.get('loggedin')
@@ -415,6 +415,112 @@ def guide_image_replace(role, biosecurity_id):
     flash('Primary image replaced successfully!')
     # 重定向到一个新的页面，例如指南详情页或指南列表
     return redirect(url_for('guide_edit', role=role, biosecurity_id=biosecurity_id))
+
+# add guide
+@app.route('/<role>/guide/add', methods=['GET'])
+def guide_add(role):
+    isLogin=session.get('loggedin')
+    username = session.get('username') 
+    roleid=session.get('roleid')
+    # 首先，检查用户是否已登录
+    if 'loggedin' not in session:
+        # 用户未登录，重定向到登录页面
+        return redirect(url_for('login'))
+    return render_template('staff/guideAdd.html',isLogin=isLogin,username=username,roleid=roleid)
+
+# insert guide
+@app.route('/<role>/guide/add', methods=['POST'])
+def guide_insert(role):
+    isLogin=session.get('loggedin')
+    username = session.get('username') 
+    roleid=session.get('roleid')
+    # 首先，检查用户是否已登录
+    if 'loggedin' not in session:
+        # 用户未登录，重定向到登录页面
+        return redirect(url_for('login'))
+    # 获取表单数据
+    common_name = request.form['common_name']
+    scientific_name = request.form['scientific_name']
+    key_char = request.form['key_char']
+    biology = request.form['biology']
+    impact = request.form['impact']
+    source_url = request.form['source_url']
+    is_present_in_nz = request.form['is_present_in_nz']
+    # 连接到数据库
+    connection, cursor = get_db_connection()
+    cursor = connection.cursor()
+    # 插入数据
+    insert_query = """
+        INSERT INTO Biosecurity 
+        (common_name, scientific_name, key_char, biology, impact, source_url, is_present_in_nz) 
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """
+    cursor.execute(insert_query, (common_name, scientific_name, key_char, biology, impact, source_url, is_present_in_nz))
+    connection.commit()
+    biosecurity_id = cursor.lastrowid  # 获取新插入行的ID
+
+    print(biosecurity_id, '~~~~~~~~~~~~~~~##################~~~~~~~~~~~~~~~~~~~~')
+    cursor.close()
+    connection.close()
+
+
+    # save primary image to app/static/images/pests
+    primary_image = request.files['primary_image']
+    if primary_image.filename == '':
+        flash('No selected file')
+        return redirect(request.url)
+    if not allowed_file(primary_image.filename):
+        flash('Invalid file type')
+        return
+    random_filename = str(uuid.uuid4())
+    _, ext = os.path.splitext(primary_image.filename)
+    filename = random_filename + ext
+    image_path = os.path.join('app/static/img/pests/', filename)
+    primary_image.save(image_path)
+
+    # save image to database
+    connection, cursor = get_db_connection()
+    cursor = connection.cursor()
+
+    # insert primary image
+    insert_query = """
+        INSERT INTO BiosecurityImage (biosecurity_id, image_path, is_primary)
+        VALUES (%s, %s, 1)
+        """
+    cursor.execute(insert_query, (biosecurity_id, filename))
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+    # save uploaded images to app/static/images/pests
+    new_images = request.files.getlist('new_image')
+    for image in new_images:
+        if image.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if not allowed_file(image.filename):
+            flash('Invalid file type')
+            return redirect(request.url)
+        random_filename = str(uuid.uuid4())
+        _, ext = os.path.splitext(image.filename)
+        filename = random_filename + ext
+        image_path = os.path.join('app/static/img/pests/', filename)
+        image.save(image_path)
+        # save image to database
+        connection, cursor = get_db_connection()
+        cursor = connection.cursor()
+        insert_query = """
+            INSERT INTO BiosecurityImage (biosecurity_id, image_path, is_primary)
+            VALUES (%s, %s, 0)
+            """
+        cursor.execute(insert_query, (biosecurity_id, filename))
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+    flash('Guide added successfully!')
+    # 重定向到一个新的页面，例如指南详情页或指南列表
+    return redirect(url_for('guide_management', role=role))
 
 
 

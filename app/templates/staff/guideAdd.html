@@ -1,0 +1,61 @@
+{% extends "public/dashboard.html" %}
+
+{% block mainRight %}
+  {% block rightHeader %}
+    <h2 class="mb-4">Create New Guide</h2>
+  {% endblock %}
+  {% block rightContent %}
+    <div class="container">
+      <form action="{{ url_for('guide_insert', role='admin') }}" method="POST" enctype="multipart/form-data">
+        <div class="mb-3">
+          <label for="commonName" class="form-label">Common Name</label>
+          <input type="text" class="form-control" id="commonName" name="common_name" required>
+        </div>
+        <div class="mb-3">
+          <label for="scientificName" class="form-label">Scientific Name</label>
+          <input type="text" class="form-control" id="scientificName" name="scientific_name" required>
+        </div>
+        <div class="mb-3">
+          <label for="keyCharacteristics" class="form-label">Key Characteristics</label>
+          <textarea class="form-control" id="keyCharacteristics" name="key_char" rows="3" required></textarea>
+        </div>
+        <div class="mb-3">
+          <label for="biology" class="form-label">Biology</label>
+          <textarea class="form-control" id="biology" name="biology" rows="3" required></textarea>
+        </div>
+        <div class="mb-3">
+          <label for="impact" class="form-label">Impact</label>
+          <textarea class="form-control" id="impact" name="impact" rows="3" required></textarea>
+        </div>
+        <div class="mb-3">
+          <label for="sourceUrl" class="form-label">Source URL</label>
+          <input type="url" class="form-control" id="sourceUrl" name="source_url" required>
+        </div>
+        <div class="mb-3">
+            <label for="is_present_in_nz" class="form-label">Present in NZ</label>
+            <select class="form-control" id="is_present_in_nz" name="is_present_in_nz">
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+            </select>
+        </div>
+        <!-- Primary Image Upload Section -->
+        <div class="mb-3">
+            <label for="primaryImage" class="form-label">Primary Image</label>
+            <input type="file" class="form-control" id="primaryImage" name="primary_image" required>
+            <small class="text-muted">Upload the primary image for the guide.</small>
+        </div>
+        <!-- More Images Upload Section -->
+        <div class="mb-3">
+            <label for="newImage" class="form-label">More Images</label>
+            <input type="file" class="form-control" id="newImage" name="new_image" multiple>
+            <small class="text-muted">You can select multiple files. (Optional)</small>
+        </div>
+        <button type="submit" class="btn btn-primary">Create Guide</button>
+      </form>
+    </div>
+  {% endblock %}
+{% endblock %}
+
+<script>
+    // JavaScript validation can be included here if needed.
+</script>

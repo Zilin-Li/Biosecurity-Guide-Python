@@ -3,6 +3,7 @@
 {% block mainRight %}
   {% block rightHeader %}
     <h2 class="mb-4">Guide Management</h2>
+    <a href="{{ url_for('guide_add', role='admin') }}">Create Guide</a>
   {% endblock %}
   {% block rightContent %}
     <div class="container">
