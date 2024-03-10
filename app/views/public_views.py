@@ -162,7 +162,7 @@ def register():
                     cursor.execute('INSERT INTO user VALUES (NULL,%s,%s, %s, %s, %s, %s,%s, %s, %s, %s)', (username, hashed, random_text, first_name, last_name, email, phone, join_date, role_id, status))
                     user_id = cursor.lastrowid
                     cursor.execute('''
-                        INSERT INTO Horticulturalist (user_id, horticulturalist_id) 
+                        INSERT INTO horticulturalist (user_id, horticulturalist_id) 
                             VALUES (%s, %s)
                         ''', (user_id, horticulturalist_id))
                     connection.commit()
