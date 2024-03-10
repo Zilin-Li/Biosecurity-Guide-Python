@@ -2,12 +2,13 @@
 #Bring in flask and declace app variable
 from flask import Flask
 import mysql.connector
-from . import connect
+
 
 
 app = Flask(__name__)
 
 def get_db_connection():
+    from . import connect
     connection = mysql.connector.connect(
         user=connect.dbuser,
         password=connect.dbpass,
