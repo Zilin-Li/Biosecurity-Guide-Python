@@ -2,7 +2,7 @@
 #Bring in flask and declace app variable
 from flask import Flask
 import mysql.connector
-from . import connect
+from .connect import *
 
 
 app = Flask(__name__)
