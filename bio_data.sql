@@ -31,15 +31,15 @@ INSERT INTO staff (user_id, staff_id, hire_date, position_id, department_id) VAL
 
 INSERT INTO biosecurity (common_name, scientific_name, key_char, biology, impact, source_url, is_present_in_nz) VALUES
 # Disease not in NZ
-('Aster yellows phytoplasma', 'Candidatus Phytoplasma asteris', 
+('Aster yellows phytoplasma', 'Candidatus Phytoplasma asteris',
 'The symptoms vary markedly depending on the host plant. And the symptoms aren''t unique to aster yellows phytoplasma.
 Symptoms include:
 
-abnormal growth, 
+abnormal growth,
 overall stunting,
 stems with a ''witch''s broom'' appearance,
-bunchy growth, yellow leaves, 
-leaf-like structures instead of flowers (phyllody), 
+bunchy growth, yellow leaves,
+leaf-like structures instead of flowers (phyllody),
 unusual greening of flowers (virescence).',
 
 'It has a large host range recorded, across many different plant families.  Hosts overseas include maize, roses, apples, brassicas (like broccoli), gladiolus, clover, citrus, onions, even the hydrangea.
@@ -57,7 +57,7 @@ At the moment, we don''t know whether the insects we have in New Zealand transmi
 'https://www.mpi.govt.nz/biosecurity/pests-and-diseases-not-in-new-zealand/horticultural-pests-and-diseases-not-in-nz/aster-yellows-phytoplasma/',
 0),
 #2
-('Avocado sunblotch disease', 'Avocado sunblotch viroid', 
+('Avocado sunblotch disease', 'Avocado sunblotch viroid',
 'Typical avocado sunblotch symptoms include:
 
 stunted growth and fewer fruit,
@@ -76,7 +76,7 @@ If the disease was found here, international trade in avocado fruit is likely to
 'https://www.mpi.govt.nz/biosecurity/pests-and-diseases-not-in-new-zealand/horticultural-pests-and-diseases-not-in-nz/avocado-sunblotch-disease/',
 0),
 #3
-('Bacterial leaf scorch', 'Xylella fastidiosa', 
+('Bacterial leaf scorch', 'Xylella fastidiosa',
 'Scorched leaves are a sign of some other plant diseases already present in New Zealand. Plants infected with Xylella show:
 
 scorched leaves
@@ -101,7 +101,7 @@ Scientists have found the bacterium in some of our native plants that were growi
 'https://www.mpi.govt.nz/biosecurity/pests-and-diseases-not-in-new-zealand/horticultural-pests-and-diseases-not-in-nz/bacterial-leaf-scorch/',
 0),
 #4
-('Bacterial soft rot', 'Pantoea ananatis', 
+('Bacterial soft rot', 'Pantoea ananatis',
 'The signs of a Pantoea ananatis infection can be similar to other diseases. Diagnosis requires an expert. The severity of these diseases can vary depending on conditions, like humidity and temperature.',
 
 'These bacteria can cause disease in onions, eucalyptus, tomatoes, melons, maize, and other plants. There are different strains of the bacteria. Some can be helpful, some harmful, and some harmless. Scientists are still learning about the benefits and risks of the different strains of bacteria.',
@@ -117,7 +117,7 @@ internal rot in melons.',
 'https://www.mpi.govt.nz/biosecurity/pests-and-diseases-not-in-new-zealand/horticultural-pests-and-diseases-not-in-nz/bacterial-soft-rot/',
 0),
 #5
-('Black rot', 'Guignardia bidwellii', 
+('Black rot', 'Guignardia bidwellii',
 'You will see small brown circular spots on young grape leaves (older leaves can resist the rot). The symptoms on leaves can be confused with other fungi.
 
 Black rot infects grapes when they''re still green. You will see light brown spots that become dark brown. Eventually, the spots cover the whole fruit.',
@@ -131,7 +131,7 @@ It''s quite hardy and can survive harsh conditions in canes, leaves, the vine, o
 'https://www.mpi.govt.nz/biosecurity/pests-and-diseases-not-in-new-zealand/horticultural-pests-and-diseases-not-in-nz/black-rot/',
 0),
 #6
-('Brown marmorated stink bug', 'Halyomorpha halys', 
+('Brown marmorated stink bug', 'Halyomorpha halys',
 'Adult BMSB are a brown ‘shield’ shape and about the size of a 10 cent coin.
 
 The easiest way to identify them is from the white bands on their antennae and alternating black and white markings on the abdomen. Its underside is a white/tan colour.
@@ -149,7 +149,7 @@ During autumn and winter, thousands of bugs can enter houses to shelter from the
 'https://www.mpi.govt.nz/biosecurity/pests-and-diseases-not-in-new-zealand/horticultural-pests-and-diseases-not-in-nz/brown-marmorated-stink-bug-threat-to-nz-and-identification/',
 0),
 #7
-('Citrus longhorn beetle', 'Anoplophora chinensis', 
+('Citrus longhorn beetle', 'Anoplophora chinensis',
 'Both males and females are black and shiny with white to blue spots.
 
 Males are about 21mm long
@@ -181,10 +181,10 @@ The larvae tunnel under the bark, weakening the trees and making them susceptibl
 'https://www.mpi.govt.nz/biosecurity/pests-and-diseases-not-in-new-zealand/horticultural-pests-and-diseases-not-in-nz/citrus-longhorn-beetle/',
 0),
 #8
-('Laurel wilt and the Asian ambrosia beetle', 'Raffaelea lauricola vectored by Xyleborus glabratus', 
+('Laurel wilt and the Asian ambrosia beetle', 'Raffaelea lauricola vectored by Xyleborus glabratus',
 'If a tree is infected, you''ll see wilted leaves that have turned a reddish or purple colour. To start with, it may only affect part of the tree, but it can affect the whole tree. Eventually, the leaves will turn brown, but they tend to stay on the branches.',
 
-'The Asian ambrosia beetle carries the fungus that causes laurel wilt in its mouth parts. The beetle feeds on the fungus. As the beetle tunnels into a tree, it infects the tree with it. 
+'The Asian ambrosia beetle carries the fungus that causes laurel wilt in its mouth parts. The beetle feeds on the fungus. As the beetle tunnels into a tree, it infects the tree with it.
 
 The beetles mostly live in avocado trees, but can live in several other laurel trees, including bay trees.',
 
@@ -196,7 +196,7 @@ Laurel wilt invades the tree''s system for carrying water from the roots to the 
 0),
 #9
 
-('Medfly (Mediterranean fruit fly)', 'Ceratitis capitata', 
+('Medfly (Mediterranean fruit fly)', 'Ceratitis capitata',
 'The adult flies are:
 
 3.5mm to 5mm (slightly smaller than a house fly)
@@ -217,7 +217,7 @@ This fruit fly is hardier than many other species of fruit fly. As it can withst
 'https://www.mpi.govt.nz/biosecurity/pests-and-diseases-not-in-new-zealand/horticultural-pests-and-diseases-not-in-nz/medfly-mediterranean-fruit-fly/',
 0),
 #10
-('Melon fly', 'Zeugodacus cucurbitae', 
+('Melon fly', 'Zeugodacus cucurbitae',
 'Adult flies:
 
 are 8 to 10mm long
@@ -236,9 +236,9 @@ Melon fly could survive in the warmer months in much of New Zealand. Populations
 'https://www.mpi.govt.nz/biosecurity/pests-and-diseases-not-in-new-zealand/horticultural-pests-and-diseases-not-in-nz/melon-fly/',
 0);
 
-INSERT INTO Biosecurity (common_name, scientific_name, key_char, biology, impact, source_url, is_present_in_nz) VALUES
+INSERT INTO biosecurity (common_name, scientific_name, key_char, biology, impact, source_url, is_present_in_nz) VALUES
 #1
-('Granulate ambrosia beetle', 'Xylosandrus crassiusculus', 
+('Granulate ambrosia beetle', 'Xylosandrus crassiusculus',
 'Adult Beetle Characteristics
 Size: They are small beetles, typically about 2 to 3 mm in length.
 Color: Adults are generally dark brown to black.
@@ -253,10 +253,10 @@ The Auckland detection was the first time the beetle has been found in New Zeala
 'https://www.mpi.govt.nz/biosecurity/exotic-pests-and-diseases-in-new-zealand/pests-and-diseases-under-response/granulate-ambrosia-beetle/',
 1),
 #2
-('Pepino mosaic virus (PepMV) ', 'Pepino mosaic virus (PepMV)', 
+('Pepino mosaic virus (PepMV) ', 'Pepino mosaic virus (PepMV)',
 'Affected plants can show stunted growth or symptoms resembling hormonal herbicide damage. Leaves around the ''head'' of the plant may show dark spots and distortion. Lower leaves may have brown, necrotic lesions.
 
-Other leaf symptoms may be yellow spots which later develop into bright yellow patches on the leaf and ‘bubbling’ on the leaf surface. 
+Other leaf symptoms may be yellow spots which later develop into bright yellow patches on the leaf and ‘bubbling’ on the leaf surface.
 
 Fruit can appear ''marbled'' and this may be more readily seen on large red tomato varieties.',
 
@@ -269,7 +269,7 @@ While the disease can affect production, it has no impact on food safety or huma
 'https://www.mpi.govt.nz/biosecurity/exotic-pests-and-diseases-in-new-zealand/pests-and-diseases-under-response/pepino-mosaic-virus-pepmv-in-auckland/',
 1),
 #3
-('Potato spindle tuber viroid(PSTVd)', null, 
+('Potato spindle tuber viroid(PSTVd)', null,
 'PSTVd is a pathogen that causes disease and potential loss of production, mainly in potatoes, tomatoes, pepinos, and capsicum. It can also infect some ornamental plants, including dahlias, chrysanthemums, and petunias.
 
 The viroid has been found twice before in New Zealand in glasshouse tomatoes and capsicum, and in Cape gooseberry. It was eradicated both times.
@@ -280,7 +280,7 @@ Many strains of PSTVd exist, with symptoms ranging from asymptomatic to severe i
 
 A viroid is like a virus but has a simpler structure.',
 
-'The Asian ambrosia beetle carries the fungus that causes laurel wilt in its mouth parts. The beetle feeds on the fungus. As the beetle tunnels into a tree, it infects the tree with it. 
+'The Asian ambrosia beetle carries the fungus that causes laurel wilt in its mouth parts. The beetle feeds on the fungus. As the beetle tunnels into a tree, it infects the tree with it.
 
 The beetles mostly live in avocado trees, but can live in several other laurel trees, including bay trees.',
 
@@ -302,7 +302,7 @@ potato and tomato true seeds.',
 1),
 
 #4
-('Queensland fruit fly eradication', 'Ceratitis capitata', 
+('Queensland fruit fly eradication', 'Ceratitis capitata',
 'Queensland fruit flies are about 6 to 8 mm long and are reddish-brown with yellow markings.
 
 Larvae look like white long-grain rice.',
@@ -325,7 +325,7 @@ Any fruit and vegetables would be subject to trade restrictions.',
 1),
 
 #5
-('Tomato red spider', 'Tetranychus evansi', 
+('Tomato red spider', 'Tetranychus evansi',
 'There are a few red mite species in New Zealand already. Identification requires an expert (acarologist). Lots of webbing is the most obvious sign that the tomato red spider mite is present.',
 
 'The tomato red spider mite feeds on a wide range of plants in the Solanaceae family. In large groups, they can mummify plants, wrapping them up in silk webbing. They will feed on the plant until it dies.
