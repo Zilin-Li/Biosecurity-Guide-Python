@@ -47,9 +47,9 @@ def user_management(role):
                 u.status, 
                 h.horticulturalist_id 
             FROM 
-                User u
+                user u
             LEFT JOIN 
-                Horticulturalist h ON u.id = h.user_id
+                horticulturalist h ON u.id = h.user_id
             WHERE u.role_id = 3
             ORDER BY u.username;
                 """ 
@@ -89,9 +89,9 @@ def user_detail(role,user_id):
                 h.horticulturalist_id,
                 h.address
             FROM 
-                User u
+                user u
             JOIN 
-                Horticulturalist h ON u.id = h.user_id
+                horticulturalist h ON u.id = h.user_id
             WHERE u.id = %s;
             """
             connection, cursor = get_db_connection()
@@ -128,9 +128,9 @@ def guide_management(role):
                     b.is_present_in_nz,
                     bi.image_path
                 FROM
-                    Biosecurity b
+                    biosecurity b
                 LEFT JOIN
-                    BiosecurityImage bi ON b.id = bi.biosecurity_id AND bi.is_primary = 1
+                    biosecurityImage bi ON b.id = bi.biosecurity_id AND bi.is_primary = 1
                 """
             connection, cursor = get_db_connection()
             try:
@@ -165,13 +165,13 @@ def guide_edit(role,biosecurity_id):
         b.impact,
         b.source_url,
         b.is_present_in_nz 
-        FROM Biosecurity b 
+        FROM biosecurity b 
         WHERE b.id = %s"""
     primary_image_query = """
         SELECT 
             bi.image_path 
         FROM 
-            BiosecurityImage bi 
+            biosecurityImage bi 
         WHERE 
             bi.biosecurity_id = %s 
         AND 
@@ -182,7 +182,7 @@ def guide_edit(role,biosecurity_id):
             bi.id,
             bi.image_path 
         FROM 
-            BiosecurityImage bi 
+            biosecurityImage bi 
         WHERE 
             bi.biosecurity_id = %s
         AND
@@ -268,7 +268,7 @@ def guide_image_delete(role, image_id):
         SELECT 
             bi.image_path 
         FROM 
-            BiosecurityImage bi 
+            biosecurityImage bi 
         WHERE 
             bi.id = %s
         """
@@ -276,7 +276,7 @@ def guide_image_delete(role, image_id):
     image_path = cursor.fetchone()[0]
     # delete image from database
     delete_query = """
-        DELETE FROM BiosecurityImage WHERE id = %s
+        DELETE FROM biosecurityImage WHERE id = %s
         """
     cursor.execute(delete_query, (image_id,))
     connection.commit()
@@ -343,7 +343,7 @@ def guide_image_replace(role, biosecurity_id):
         SELECT 
             bi.image_path 
         FROM 
-            BiosecurityImage bi 
+            biosecurityImage bi 
         WHERE 
             bi.biosecurity_id = %s 
         AND 

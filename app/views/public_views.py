@@ -49,7 +49,7 @@ def login():
                 u.salt, 
                 u.role_id 
             FROM 
-                User u
+                user u
             WHERE username = %s;
                 """ 
             connection, cursor = get_db_connection()
