@@ -399,6 +399,7 @@ def guide():
     username = session.get('username')
     userid = session.get('id')
     roleid=session.get('roleid')
+    guide_list = None
     if not isLogin:
         return redirect(url_for('login'))
     else:
