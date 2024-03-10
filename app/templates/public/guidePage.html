@@ -19,7 +19,7 @@
               </a>
               <div class="card-body">
                 <h5 class="card-title">{{guide[1]}}</h5>
-                <p class="card-text">Present in NZ: {{guide[2]}}</p>
+                <p class="card-text">Present in NZ: {{ 'Yes' if guide[2] == 1 else 'No' }}</p>
               </div>
             </div>
           </div>  

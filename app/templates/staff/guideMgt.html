@@ -2,11 +2,17 @@
 
 {% block mainRight %}
   {% block rightHeader %}
-    <h2 class="mb-4">Guide Management</h2>
-    <a href="{{ url_for('guide_add', role='admin') }}">Create Guide</a>
+    <h2 class="mb-4">Guide Management</h2> 
   {% endblock %}
   {% block rightContent %}
-    <div class="container">
+    <div class="d-flex justify-content-between mb-3"> 
+        {%if roleid==1 %}
+            <a href="{{ url_for('guide_add', role='admin') }}" class="btn btn-success btn-sm">Create Guide</a>
+        {%elif roleid == 2 %}
+            <a href="{{ url_for('guide_add', role='staff') }}" class="btn btn-success btn-sm">Create Guide</a>
+        {%endif%}
+    </div>
+    <div class="container my-2">
       <table class="table">
         <thead>
           <tr>
@@ -25,16 +31,19 @@
                 {% if guide[4]  %}
                     <td><img src="{{url_for('static', filename = 'img/pests/' + guide[4])}}" alt="Thumbnail" style="width: 60px; height: auto;"></td>
                 {% else %}
-                    <td><img src="{{url_for('static', filename = 'img/homepage_img.jpg')}}" alt="Thumbnail" style="width: 60px; height: auto;"></td>
-                  
-                {%endif%}
-              
+                    <td><img src="{{url_for('static', filename = 'img/homepage_img.jpg')}}" alt="Thumbnail" style="width: 60px; height: auto;"></td>                 
+                {%endif%}              
               <td>{{ guide[1] }}</td>
               <td>{{ guide[2] }}</td>
-              <td>{{ guide[3] }}</td>
+              <td>{{ 'Yes' if guide[3] == 1 else 'No' }}</td>
               <td>
-                <a href="{{ url_for('guide_edit', role = 'admin', biosecurity_id=guide[0])}}" class="btn btn-sm btn-primary">Edit</a>
-                <a href="{{ url_for('home')}}" class="btn btn-sm btn-danger">Delete</a>
+                {%if roleid==1 %}
+                    <a href="{{ url_for('guide_edit', role = 'admin', biosecurity_id=guide[0])}}" class="btn btn-sm btn-success"><i class="bi bi-pencil-fill"></i>  Edit</a>
+                    <a href="{{ url_for('home')}}" class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i>  Delete</a>
+                {%elif roleid == 2 %}
+                    <a href="{{ url_for('guide_edit', role = 'staff', biosecurity_id=guide[0])}}" class="btn btn-sm btn-success"><i class="bi bi-pencil-fill"></i>  Edit</a>
+                    <a href="{{ url_for('home')}}" class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i>  Delete</a>
+                {%endif%}               
               </td>
             </tr>
           {% endfor %}

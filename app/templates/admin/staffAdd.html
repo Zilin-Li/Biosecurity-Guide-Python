@@ -1,0 +1,99 @@
+{% extends "public/dashboard.html" %}
+
+{% block mainRight %}
+    {% block rightHeader %}
+    <h2 class="mb-4">Add New User</h2>
+    {% endblock %}
+    {% block rightContent %}
+    <div class="container my-4">
+        <form action="{{ url_for('add_staff')}}" method="post">
+            <div class="row">
+              
+                <!-- Username -->
+                <div class="col-md-6 mb-3">
+                    <label for="newusername" class="form-label">Username *</label>
+                    <input type="text" class="form-control" id="newusername" name="newusername" required>
+                </div>
+                <!-- Email -->
+                <div class="col-md-6 mb-3">
+                    <label for="email" class="form-label">Email *</label>
+                    <input type="email" class="form-control" id="email" name="email"  required>
+                </div>
+            </div>
+            <div class="row">
+                <!-- Password -->
+                <div class="col-md-6 mb-3">
+                    <label for="newpassword" class="form-label">Password *</label>
+                    <input type="password" class="form-control" name="newpassword" id="newpassword" required>
+                </div>
+                
+                <!-- Confirm Password -->
+                <div class="col-md-6 mb-3">
+                    <label for="confirmedPassword" class="form-label">Confirm Password * </label>
+                    <input type="password" class="form-control"  name="confirmedPassword" id="confirmedPassword" required>
+                </div>
+            </div>
+            <div class="row">
+                <!-- First Name -->
+                <div class="col-md-6 mb-3">
+                    <label for="firstName" class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="firstName" name="firstName"  maxlength="50" pattern="[A-Za-z]+">
+                </div>
+                <!-- Last Name -->
+                <div class="col-md-6 mb-3">
+                    <label for="lastName" class="form-label">Last Name</label>
+                    <input type="text" class="form-control" id="lastName" name="lastName"  maxlength="50" pattern="[A-Za-z]+" >
+                </div>
+            </div>
+            <div class="row">
+                <!-- Phone -->
+                <div class="col-md-6 mb-3">
+                    <label for="phone" class="form-label">Work Phone</label>
+                    <input type="tel" class="form-control" id="phone" name="phone" pattern="[0-9]+" maxlength="20">
+                </div>   
+                <div class="col-md-6 mb-3">
+                    <label for="hireDate" class="form-label">Hire Date</label>
+                    <input type="date" class="form-control" id="hireDate" name="hireDate">
+                </div>      
+            </div>
+            <div class="row">
+                
+                <div class="col-md-6 mb-3">
+                    <label for="position" class="form-label">Position *</label>
+                    <select class="form-select" id="position" name="position" required>
+                        {% for position in position_list %}
+                            <option value="{{ position[0] }}">{{ position[1] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="department" class="form-label">Department *</label>
+                    <select class="form-select" id="department" name="department" required>
+                        {% for department in department_list %}
+                            <option value="{{ department[0] }}">{{ department[1] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="status" class="form-label">Status: *</label>
+                    <select class="form-control" id="status" name="status" required>
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+                </div>  
+                <div class="col-md-6 mb-3">
+                    <label for="isAdmin" class="form-label">Is Admin *</label>
+                    <select class="form-control" id="isAdmin" name="isAdmin" required>
+                        <option value="1">Yes</option>
+                        <option value="2">No</option>
+                    </select>
+                </div> 
+            </div>
+            <button type="submit" class="btn btn-primary">Comfirm</button>
+        </form>
+    </div>
+    {% endblock %}
+{% endblock %}

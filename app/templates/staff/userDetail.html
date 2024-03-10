@@ -14,12 +14,12 @@
                 <div class="card-body bg-light px-5">
                     <h5 class="card-title" style="font-size: 1.5rem;">{{ user_details[0][2] }}</h5> <!-- Full Name -->
                     <p class="card-text" style="font-size: 1.2rem;">
-                        <p><strong>Email:</strong> {{ user_details[0][3] }}</p>
-                        <p><strong>Phone:</strong> {{ user_details[0][4] }}</p>
-                        <p><strong>Join Date:</strong> {{ user_details[0][5].strftime('%Y-%m-%d') }}</p>
-                        <p><strong>Status:</strong> <span class="{{ 'text-success' if user_details[0][6] == 1 else 'text-danger' }}">{{ 'Active' if user_details[0][6] == 1 else 'Inactive' }}</span></p>
-                        <p><strong>Horticulturalist ID:</strong> {{ user_details[0][7] }}</p>
-                        <p><strong>Address:</strong> {{ user_details[0][8] }}</p>
+                        <p><strong >Email:</strong>  {{ user_details[0][3] }}</p>
+                        <p><strong>Phone:</strong>  {{ user_details[0][4] }}</p>
+                        <p><strong>Join Date:</strong>  {{ user_details[0][5]}}</p>
+                        <p><strong>Status:</strong> <span class="{{ 'text-success' if user_details[0][6] == 1 else 'text-danger' }}">  {{ 'Active' if user_details[0][6] == 1 else 'Inactive' }}</span></p>
+                        <p><strong>Horticulturalist ID:</strong>  {{ user_details[0][7] }}</p>
+                        <p><strong>Address:</strong>  {{ user_details[0][8] }}</p>
                     </p>
                 </div>
                 <div class="card-footer bg-transparent my-1">

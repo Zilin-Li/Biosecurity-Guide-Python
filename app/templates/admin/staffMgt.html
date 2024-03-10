@@ -1,15 +1,55 @@
 {% extends "public/dashboard.html" %}
 
 {% block mainRight %}
-<div class="container mt-5 ">
     {% block rightHeader %}
-    <h2 class="mb-4">Admin Dashboard</h2>
-    {% endblock %}  
+    <h2 class="mb-4">Staff Management</h2>
+    {% endblock %}
     {% block rightContent %}
-    this is admin dashboard
-    {% endblock %}  
+        <div class="d-flex justify-content-between mb-3">
+            <div>
+                {% if session.roleid == 1 %}
+                    <a href="/admin/staff/add" class="btn btn-success btn-sm"><i class="bi bi-plus-lg"></i> Add Staff</a>
+                {% endif %}
+            </div>
+        </div>
 
-</div>
-    
-    
-{% endblock %}    
+        <div class="container my-2">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">No.</th>
+                        <th scope="col">Staff ID</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Work Phone</th>
+                        
+                        <th scope="col">Is Admin</th>
+                        <th scope="col">Active</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for staff in staff_list %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{staff[8]}}</td>
+                        <td>{{staff[1]}}</td>
+                        <td>{{staff[4]}}</td>
+                        <td>{{staff[5]}}</td>
+                       
+                        <td>{{ 'Yes' if staff[12]==1 else 'No' }}</td>
+                        <td>{{ 'Active' if staff[7] else 'Inactive' }}</td>
+                        <td>
+                            {% if roleid == 1 %}
+                                <a href="{{ url_for('staff_detail', user_id=staff[0])}}" class="btn btn-primary btn-sm"><i class="bi bi-eye-fill"></i> Details</a>
+                                <a href="{{ url_for('staff_edit', user_id=staff[0])}}" class="btn btn-success btn-sm"><i class="bi bi-pencil-fill"></i> Edit</a>
+                                <a href="{{ url_for('edit_user', user_id= staff[0]) }}" class="btn btn-danger btn-sm"><i class="bi bi-trash-fill"></i>  Delete</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endblock %}
+{% endblock %}

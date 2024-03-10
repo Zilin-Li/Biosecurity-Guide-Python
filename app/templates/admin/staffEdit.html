@@ -1,0 +1,111 @@
+{% extends "public/dashboard.html" %}
+
+{% block mainRight %}
+    {% block rightHeader %}
+    <h2 class="mb-4">Edit Staff</h2>
+    {% endblock %}
+    {% block rightContent %}
+    <div class="container my-4">
+        <form action="{{ url_for('edit_staff_submit', user_id = staff_info[0][0]) }}" method="post">
+            <div class="row">
+              
+                <!-- Username -->
+                <div class="col-md-6 mb-3">
+                    <label for="username" class="form-label">Username </label>
+                    <input type="text" class="form-control" id="username" name="username" value="{{staff_info[0][1]}}" disabled>
+                </div>
+                <!-- Email -->
+                <div class="col-md-6 mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email"  value="{{staff_info[0][4]}}" disabled>
+                </div>
+            </div>
+            <div class="row">
+                <!-- Password -->
+                <div class="col-md-6 mb-3">
+                    <label for="newpassword" class="form-label">Password </label>
+                    <input type="password" class="form-control" name="newpassword" id="newpassword" placeholder="••••••••" >
+                </div>
+                
+                <!-- Confirm Password -->
+                <div class="col-md-6 mb-3">
+                    <label for="confirmedPassword" class="form-label">Confirm Password </label>
+                    <input type="password" class="form-control"  name="confirmedPassword" id="confirmedPassword" placeholder="••••••••">
+                </div>
+            </div>
+            <div class="row">
+                <!-- First Name -->
+                <div class="col-md-6 mb-3">
+                    <label for="firstName" class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="firstName" name="firstName"  maxlength="50" pattern="[A-Za-z]+"  value="{{staff_info[0][2]}}">
+                </div>
+                <!-- Last Name -->
+                <div class="col-md-6 mb-3">
+                    <label for="lastName" class="form-label">Last Name</label>
+                    <input type="text" class="form-control" id="lastName" name="lastName"  maxlength="50" pattern="[A-Za-z]+"  value="{{staff_info[0][3]}}">
+                </div>
+            </div>
+            <div class="row">
+                <!-- Phone -->
+                <div class="col-md-6 mb-3">
+                    <label for="phone" class="form-label">Work Phone</label>
+                    <input type="tel" class="form-control" id="phone" name="phone" pattern="[0-9]+" maxlength="20" value="{{staff_info[0][5]}}">
+                </div>   
+                <div class="col-md-6 mb-3">
+                    <label for="hireDate" class="form-label">Hire Date</label>
+                    <input type="date" class="form-control" id="hireDate" name="hireDate" value="{{staff_info[0][9]}}">
+                </div>      
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="staffid" class="form-label">Staff ID</label>
+                    <input type="text" class="form-control" id="staffid"   maxlength="25" pattern="[A-Za-z0-9]+" name="staffid" value="{{staff_info[0][8]}}">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="status" class="form-label">Status: </label>
+                    <select class="form-control" id="status" name="status">
+                        <option value="Active" {% if staff_info[0][7] == 1 %}selected{% endif %}>Active</option>
+                        <option value="Inactive" {% if staff_info[0][7] != 1 %}selected{% endif %}>Inactive</option>
+                    </select>
+                </div>   
+            </div>
+            <div class="row">
+                
+                <div class="col-md-6 mb-3">
+                    <label for="position" class="form-label">Position</label>
+                    <select class="form-select" id="position" name="position">
+                        {% for position in position_list %}
+                            <option value="{{ position[0] }}" {{ 'selected' if staff_info[0][10] == position[1] else '' }}>{{ position[1] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="department" class="form-label">Department</label>
+                    <select class="form-select" id="department" name="department">
+                        {% for department in department_list %}
+                            <option value="{{ department[0] }}" {{ 'selected' if staff_info[0][10] == department[1] else '' }}>{{ department[1] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="isAdmin" class="form-label">Is Admin</label>
+                    <select class="form-control" id="isAdmin" name="isAdmin">
+                        <option value="1" {% if staff_info[0][12] == 1 %}selected{% endif %}>Yes</option>
+                        <option value="2" {% if staff_info[0][12] != 1 %}selected{% endif %}>No</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="joinDate" class="form-label">Join Date</label>
+                    <input type="date" class="form-control" id="joinDate" name="joinDate" value="{{staff_info[0][6]}}" disabled >
+                </div>
+            </div>  
+            
+            <div class="msg text-danger" >{{ msg }}</div>
+            <button type="submit" class="btn btn-primary">Comfirm</button>
+        </form>
+    </div>
+    {% endblock %}
+{% endblock %}

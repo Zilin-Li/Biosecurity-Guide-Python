@@ -19,6 +19,7 @@
           <p><strong>Key Characteristics:</strong> {{ guide_details.key_char }}</p>
           <p><strong>Biology:</strong> {{ guide_details.biology }}</p>
           <p><strong>Impact:</strong> {{ guide_details.impact }}</p>
+          <p><strong>Present in NZ: </strong> {{ 'Yes' if guide_details.is_present_in_nz == 1 else 'No' }}</p>
           <p><strong>Source URL:</strong> <a href="{{ guide_details.source_url }}" target="_blank">Link</a></p>
         </div>
       </div>

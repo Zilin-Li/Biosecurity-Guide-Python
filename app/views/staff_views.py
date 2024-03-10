@@ -84,7 +84,7 @@ def user_detail(role,user_id):
                 CONCAT(COALESCE(u.first_name, ''), ' ', COALESCE(u.last_name, '')) AS full_name,
                 u.email,
                 u.phone,
-                u.join_date, 
+                DATE_FORMAT(u.join_date, '%Y-%m-%d') AS formatted_join_date, 
                 u.status, 
                 h.horticulturalist_id,
                 h.address
@@ -109,7 +109,7 @@ def user_detail(role,user_id):
         return redirect(url_for('login'))         
 
 # display all guides in table
-@app.route('/<role>/guide_management')
+@app.route('/<role>/guide')
 def guide_management(role):
     isLogin=session.get('loggedin')
     username = session.get('username') 
@@ -141,8 +141,7 @@ def guide_management(role):
             finally:
                 cursor.close()
                 connection.close()
-            return render_template('staff/guideMgt.html',isLogin=isLogin,username=username,roleid=roleid,guide_list=guide_list)
-            
+            return render_template('staff/guideMgt.html',isLogin=isLogin,username=username,roleid=roleid,guide_list=guide_list)            
     else:
         return redirect(url_for('login'))
 
@@ -153,11 +152,8 @@ def guide_edit(role,biosecurity_id):
     isLogin=session.get('loggedin')
     username = session.get('username') 
     roleid=session.get('roleid')
-    # 首先，检查用户是否已登录
     if 'loggedin' not in session:
-        # 用户未登录，重定向到登录页面
         return redirect(url_for('login'))
-    # 连接到数据库
     connection, cursor = get_db_connection()
     cursor = connection.cursor()
     info_query="""SELECT 
@@ -200,8 +196,6 @@ def guide_edit(role,biosecurity_id):
 
     cursor.execute(image_query, (biosecurity_id,))
     images = cursor.fetchall()
-
-    # 关闭数据库连接
     cursor.close()
     connection.close()
     primary_image = primary_image if primary_image else ('',)
@@ -220,18 +214,7 @@ def guide_edit(role,biosecurity_id):
         'primary_image': primary_image[0],
         'images': images
     }
-
-    # 渲染编辑表单模板
-
     return render_template('staff/guideEdit.html',isLogin=isLogin,username=username,roleid=roleid,guide_details=guide_details)
-
-
-
-
-
-
-
-
 
 # update guide
 @app.route('/<role>/guide/edit/<int:biosecurity_id>', methods=['POST'])
@@ -239,11 +222,8 @@ def guide_update(role,biosecurity_id):
     isLogin=session.get('loggedin')
     username = session.get('username')
     roleid=session.get('roleid')
-    # 首先，检查用户是否已登录
     if 'loggedin' not in session:
-        # 用户未登录，重定向到登录页面
         return redirect(url_for('login'))
-    # 获取表单数据
     common_name = request.form['common_name']
     scientific_name = request.form['scientific_name']
     key_char = request.form['key_char']
@@ -251,10 +231,8 @@ def guide_update(role,biosecurity_id):
     impact = request.form['impact']
     source_url = request.form['source_url']
     is_present_in_nz = request.form['is_present_in_nz']
-    # 连接到数据库
     connection, cursor = get_db_connection()
     cursor = connection.cursor()
-    # 更新数据库
     update_query = """
         UPDATE Biosecurity 
         SET 
@@ -273,7 +251,7 @@ def guide_update(role,biosecurity_id):
     cursor.close()
     connection.close()
     flash('Guide updated successfully!')
-    # 重定向到一个新的页面，例如指南详情页或指南列表
+    # redirect to guide edit page
     return redirect(url_for('guide_edit', role=role, biosecurity_id=biosecurity_id))
 
 
@@ -319,15 +297,13 @@ def allowed_file(filename):
 # add image
 @app.route('/<role>/guide/image/add/<int:biosecurity_id>', methods=['POST'])
 def guide_image_add(role, biosecurity_id):
-
-    # 检查是否有文件在提交的表单中
+    # check if the post request has the file part
     if 'new_image' not in request.files:
         flash('No file part')
         return redirect(request.url)
     new_images = request.files.getlist('new_image')
 
     for image in new_images:
-        # 如果用户没有选择文件，浏览器也会提交一个没有文件名的空部分
         if image.filename == '':
             flash('No selected file')
             return redirect(request.url)
@@ -354,9 +330,7 @@ def guide_image_add(role, biosecurity_id):
         connection.commit()
         cursor.close()
         connection.close()
-
     flash('Images uploaded successfully!')
-    # 重定向到一个新的页面，例如指南详情页或指南列表
     return redirect(url_for('guide_edit', role=role, biosecurity_id=biosecurity_id))
 
 # replace primary image
@@ -413,7 +387,6 @@ def guide_image_replace(role, biosecurity_id):
     os.remove(os.path.join('app/static/img/pests/', primary_image))
 
     flash('Primary image replaced successfully!')
-    # 重定向到一个新的页面，例如指南详情页或指南列表
     return redirect(url_for('guide_edit', role=role, biosecurity_id=biosecurity_id))
 
 # add guide
@@ -422,9 +395,8 @@ def guide_add(role):
     isLogin=session.get('loggedin')
     username = session.get('username') 
     roleid=session.get('roleid')
-    # 首先，检查用户是否已登录
+
     if 'loggedin' not in session:
-        # 用户未登录，重定向到登录页面
         return redirect(url_for('login'))
     return render_template('staff/guideAdd.html',isLogin=isLogin,username=username,roleid=roleid)
 
@@ -434,11 +406,11 @@ def guide_insert(role):
     isLogin=session.get('loggedin')
     username = session.get('username') 
     roleid=session.get('roleid')
-    # 首先，检查用户是否已登录
+ 
     if 'loggedin' not in session:
-        # 用户未登录，重定向到登录页面
+  
         return redirect(url_for('login'))
-    # 获取表单数据
+
     common_name = request.form['common_name']
     scientific_name = request.form['scientific_name']
     key_char = request.form['key_char']
@@ -446,10 +418,10 @@ def guide_insert(role):
     impact = request.form['impact']
     source_url = request.form['source_url']
     is_present_in_nz = request.form['is_present_in_nz']
-    # 连接到数据库
+  
     connection, cursor = get_db_connection()
     cursor = connection.cursor()
-    # 插入数据
+
     insert_query = """
         INSERT INTO Biosecurity 
         (common_name, scientific_name, key_char, biology, impact, source_url, is_present_in_nz) 
@@ -458,8 +430,6 @@ def guide_insert(role):
     cursor.execute(insert_query, (common_name, scientific_name, key_char, biology, impact, source_url, is_present_in_nz))
     connection.commit()
     biosecurity_id = cursor.lastrowid  # 获取新插入行的ID
-
-    print(biosecurity_id, '~~~~~~~~~~~~~~~##################~~~~~~~~~~~~~~~~~~~~')
     cursor.close()
     connection.close()
 
