@@ -412,7 +412,7 @@ def guide():
         FROM
             biosecurity b
         LEFT JOIN
-            biosecurityImage bi ON b.id = bi.biosecurity_id AND bi.is_primary = 1
+            biosecurityimage bi ON b.id = bi.biosecurity_id AND bi.is_primary = 1
         """
         connection, cursor = get_db_connection()
         try:
