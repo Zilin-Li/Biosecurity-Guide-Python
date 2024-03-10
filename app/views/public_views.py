@@ -114,7 +114,7 @@ def register():
                 u.username, 
                 u.email
             FROM 
-                User u
+                user u
             WHERE username = %s
                 OR u.email = %s;
                 """ 
@@ -239,9 +239,9 @@ def edit_user_profile():
                     IFNULL(h.address,'') AS address,
                     u.status
                 FROM 
-                    User u
+                    user u
                 JOIN 
-                    Horticulturalist h ON u.id = h.user_id
+                    horticulturalist h ON u.id = h.user_id
                 WHERE 
                     u.id = %s;
             """
@@ -264,10 +264,10 @@ def edit_user_profile():
                     d.department_name,
                     u.status
                 FROM
-                    User u
-                INNER JOIN Staff s ON u.id = s.user_id
-                INNER JOIN Position p ON s.position_id = p.id
-                INNER JOIN Department d ON s.department_id = d.id
+                    user u
+                INNER JOIN staff s ON u.id = s.user_id
+                INNER JOIN position p ON s.position_id = p.id
+                INNER JOIN department d ON s.department_id = d.id
                 WHERE
                     u.id = %s;
                 """
@@ -352,7 +352,7 @@ def change_password():
                 u.hashed_password, 
                 u.salt 
             FROM 
-                User u
+                user u
             WHERE id = %s;
                 """ 
         connection, cursor = get_db_connection()
@@ -409,9 +409,9 @@ def guide():
             b.is_present_in_nz,
             bi.image_path
         FROM
-            Biosecurity b
+            biosecurity b
         LEFT JOIN
-            BiosecurityImage bi ON b.id = bi.biosecurity_id AND bi.is_primary = 1
+            biosecurityImage bi ON b.id = bi.biosecurity_id AND bi.is_primary = 1
         """
         connection, cursor = get_db_connection()
         try:
@@ -449,7 +449,7 @@ def guide_detail(biosecurity_id):
         b.source_url,
         b.is_present_in_nz
     FROM
-        Biosecurity b
+        biosecurity b
     WHERE
         b.id = %s
     """
@@ -460,7 +460,7 @@ def guide_detail(biosecurity_id):
         description,
         is_primary
     FROM
-        BiosecurityImage
+        biosecurityImage
     WHERE
         biosecurity_id = %s
     """

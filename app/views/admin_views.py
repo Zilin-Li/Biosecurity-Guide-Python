@@ -46,7 +46,7 @@ def add_user():
                 u.username, 
                 u.email
             FROM 
-                User u
+                user u
             WHERE username = %s
                 OR u.email = %s;;
                 """ 
@@ -142,9 +142,9 @@ def edit_user(user_id):
             h.horticulturalist_id,
             h.address
         FROM 
-            User u
+            user u
         JOIN 
-            Horticulturalist h ON u.id = h.user_id
+            horticulturalist h ON u.id = h.user_id
         WHERE u.id = %s;
             """
         connection, cursor = get_db_connection()
@@ -182,7 +182,7 @@ def edit_user_submit(user_id):
             SELECT 
                 h.horticulturalist_id
             FROM 
-                Horticulturalist h
+                horticulturalist h
             WHERE horticulturalist_id = %s
             AND user_id != %s
                 ;
@@ -466,7 +466,7 @@ def add_staff():
                 u.username, 
                 u.email
             FROM 
-                User u
+                user u
             WHERE username = %s
                 OR u.email = %s;;
                 """ 
@@ -553,10 +553,10 @@ def get_staff_info(extra_query=''):
             p.position_name,
             d.department_name,
             u.role_id
-        FROM Staff s
-        JOIN User u ON s.user_id = u.id
-        JOIN Position p ON s.position_id = p.id
-        JOIN Department d ON s.department_id = d.id
+        FROM staff s
+        JOIN user u ON s.user_id = u.id
+        JOIN position p ON s.position_id = p.id
+        JOIN department d ON s.department_id = d.id
         """ 
     if extra_query:
         query += extra_query
@@ -576,7 +576,7 @@ def get_position_list():
         SELECT 
             id,
             position_name
-        FROM Position
+        FROM position
         """ 
     connection, cursor = get_db_connection()
     try:
@@ -594,7 +594,7 @@ def get_department_list():
         SELECT 
             id,
             department_name
-        FROM Department
+        FROM department
         """ 
     connection, cursor = get_db_connection()
     try:
