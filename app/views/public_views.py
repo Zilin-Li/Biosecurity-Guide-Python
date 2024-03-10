@@ -53,6 +53,7 @@ def login():
             WHERE username = %s;
                 """ 
             connection, cursor = get_db_connection()
+            account = None
             try:
                 cursor.execute(query, (username,))
                 # Fetch one record and return result
