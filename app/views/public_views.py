@@ -461,7 +461,7 @@ def guide_detail(biosecurity_id):
         description,
         is_primary
     FROM
-        biosecurityImage
+        biosecurityimage
     WHERE
         biosecurity_id = %s
     """

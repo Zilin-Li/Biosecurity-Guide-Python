@@ -114,6 +114,7 @@ def guide_management(role):
     isLogin=session.get('loggedin')
     username = session.get('username') 
     roleid=session.get('roleid')
+    guide_list = []
     if isLogin:
         expected_role = 'admin' if roleid == 1 else 'staff'
         if role != expected_role:
@@ -130,7 +131,7 @@ def guide_management(role):
                 FROM
                     biosecurity b
                 LEFT JOIN
-                    biosecurityImage bi ON b.id = bi.biosecurity_id AND bi.is_primary = 1
+                    biosecurityimage bi ON b.id = bi.biosecurity_id AND bi.is_primary = 1
                 """
             connection, cursor = get_db_connection()
             try:
@@ -171,7 +172,7 @@ def guide_edit(role,biosecurity_id):
         SELECT 
             bi.image_path 
         FROM 
-            biosecurityImage bi 
+            biosecurityimage bi 
         WHERE 
             bi.biosecurity_id = %s 
         AND 
@@ -182,7 +183,7 @@ def guide_edit(role,biosecurity_id):
             bi.id,
             bi.image_path 
         FROM 
-            biosecurityImage bi 
+            biosecurityimage bi 
         WHERE 
             bi.biosecurity_id = %s
         AND
@@ -268,7 +269,7 @@ def guide_image_delete(role, image_id):
         SELECT 
             bi.image_path 
         FROM 
-            biosecurityImage bi 
+            biosecurityimage bi 
         WHERE 
             bi.id = %s
         """
@@ -276,7 +277,7 @@ def guide_image_delete(role, image_id):
     image_path = cursor.fetchone()[0]
     # delete image from database
     delete_query = """
-        DELETE FROM biosecurityImage WHERE id = %s
+        DELETE FROM biosecurityimage WHERE id = %s
         """
     cursor.execute(delete_query, (image_id,))
     connection.commit()
@@ -343,7 +344,7 @@ def guide_image_replace(role, biosecurity_id):
         SELECT 
             bi.image_path 
         FROM 
-            biosecurityImage bi 
+            biosecurityimage bi 
         WHERE 
             bi.biosecurity_id = %s 
         AND 
