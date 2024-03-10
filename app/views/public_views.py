@@ -119,6 +119,7 @@ def register():
                 OR u.email = %s;
                 """ 
             connection, cursor = get_db_connection()
+            account = None
             try:
                 cursor.execute(query, (username,email,))
                 account = cursor.fetchone()
