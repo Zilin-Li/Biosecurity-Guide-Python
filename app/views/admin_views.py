@@ -95,7 +95,7 @@ def add_user():
                     new_user_id = cursor.lastrowid
                    
                     cursor.execute('''
-                        INSERT INTO Horticulturalist (user_id, horticulturalist_id,address) 
+                        INSERT INTO horticulturalist (user_id, horticulturalist_id,address) 
                             VALUES (%s, %s,%s)
                         ''', (new_user_id, horticulturalist_id,address))
                     connection.commit()
@@ -224,7 +224,7 @@ def edit_user_submit(user_id):
                     WHERE id = %s;
                     """  
                 update_Hoti_query="""
-                        UPDATE Horticulturalist
+                        UPDATE horticulturalist
                         SET address = %s,
                         horticulturalist_id = %s
                         WHERE user_id = %s;
@@ -254,7 +254,7 @@ def edit_user_submit(user_id):
                 WHERE id = %s;
                 """  
             update_Hoti_query="""
-                    UPDATE Horticulturalist
+                    UPDATE horticulturalist
                     SET address = %s,
                     horticulturalist_id = %s
                     WHERE user_id = %s;

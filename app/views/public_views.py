@@ -301,7 +301,7 @@ def update_user_profile():
             WHERE id = %s;
             """  
         update_Hoti_query="""
-                UPDATE Horticulturalist
+                UPDATE horticulturalist
                 SET address = %s
                 WHERE user_id = %s;
             """ 
