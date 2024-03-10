@@ -235,7 +235,7 @@ def guide_update(role,biosecurity_id):
     connection, cursor = get_db_connection()
     cursor = connection.cursor()
     update_query = """
-        UPDATE Biosecurity 
+        UPDATE biosecurity 
         SET 
             common_name = %s, 
             scientific_name = %s, 
@@ -324,7 +324,7 @@ def guide_image_add(role, biosecurity_id):
         connection, cursor = get_db_connection()
         cursor = connection.cursor()
         query = """
-            INSERT INTO BiosecurityImage (biosecurity_id, image_path, is_primary)
+            INSERT INTO biosecurityimage (biosecurity_id, image_path, is_primary)
             VALUES (%s, %s, 0)
             """
         cursor.execute(query, (biosecurity_id, filename))
@@ -374,7 +374,7 @@ def guide_image_replace(role, biosecurity_id):
     cursor = connection.cursor()
     # update primary image
     update_query = """
-        UPDATE BiosecurityImage 
+        UPDATE biosecurityimage 
         SET image_path = %s 
         WHERE biosecurity_id = %s 
         AND is_primary = 1
@@ -424,7 +424,7 @@ def guide_insert(role):
     cursor = connection.cursor()
 
     insert_query = """
-        INSERT INTO Biosecurity 
+        INSERT INTO biosecurity 
         (common_name, scientific_name, key_char, biology, impact, source_url, is_present_in_nz) 
         VALUES (%s, %s, %s, %s, %s, %s, %s)
         """
@@ -455,7 +455,7 @@ def guide_insert(role):
 
     # insert primary image
     insert_query = """
-        INSERT INTO BiosecurityImage (biosecurity_id, image_path, is_primary)
+        INSERT INTO biosecurityimage (biosecurity_id, image_path, is_primary)
         VALUES (%s, %s, 1)
         """
     cursor.execute(insert_query, (biosecurity_id, filename))
@@ -481,7 +481,7 @@ def guide_insert(role):
         connection, cursor = get_db_connection()
         cursor = connection.cursor()
         insert_query = """
-            INSERT INTO BiosecurityImage (biosecurity_id, image_path, is_primary)
+            INSERT INTO biosecurityimage (biosecurity_id, image_path, is_primary)
             VALUES (%s, %s, 0)
             """
         cursor.execute(insert_query, (biosecurity_id, filename))

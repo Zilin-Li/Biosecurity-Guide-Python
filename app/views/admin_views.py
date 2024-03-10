@@ -386,7 +386,7 @@ def edit_staff_submit(user_id):
                     WHERE id = %s;
                     """  
                 update_staff_query="""
-                        UPDATE Staff
+                        UPDATE staff
                         SET position_id = %s,
                         department_id = %s,
                         hire_date = %s,
@@ -416,7 +416,7 @@ def edit_staff_submit(user_id):
                 WHERE id = %s;
                 """  
             update_staff_query="""
-                        UPDATE Staff
+                        UPDATE staff
                         SET position_id = %s,
                         department_id = %s,
                         hire_date = %s,
