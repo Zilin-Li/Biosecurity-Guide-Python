@@ -99,20 +99,19 @@ def add_user():
                             VALUES (%s, %s,%s)
                         ''', (new_user_id, horticulturalist_id,address))
                     connection.commit()
+                    flash('You have successfully registered!','success')
                 except Exception as e:
                     print(f"An error occurred: {e}")
                 finally:
                     cursor.close()
                     connection.close()
-                msg = 'You have successfully registered!'
-                # msg =horticulturalist_id
-                # return redirect( url_for('login'))
+
         elif request.method == 'POST':
-            # Form is empty... (no POST data)
             msg = 'Please fill out the form!'
         return render_template("admin/userAdd.html",isLogin=isLogin,username=username,roleid=roleid, msg=msg)
     else:
         return redirect(url_for('login'))
+
 def generate_user_num(roleName):
     # Gets the year, month, day, hour, second of the current time
     timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
@@ -127,7 +126,6 @@ def edit_user(user_id):
     isLogin=session.get('loggedin')
     username = session.get('username') 
     roleid=session.get('roleid')   
-    msg=''
     if isLogin:   
         query = """
         SELECT 
@@ -156,7 +154,7 @@ def edit_user(user_id):
         finally:
             cursor.close()
             connection.close()
-        return render_template('admin/userEdit.html',isLogin=isLogin,username=username,roleid=roleid,msg=msg,user_info=user_info)
+        return render_template('admin/userEdit.html',isLogin=isLogin,username=username,roleid=roleid,user_info=user_info)
     else:
         return redirect(url_for('login'))
 
@@ -235,14 +233,12 @@ def edit_user_submit(user_id):
                 
                     cursor.execute(update_Hoti_query, (address, hortid, user_id))
                     connection.commit()
+                    flash('You have successfully update!','success')
                 except Exception as e:
                     print(f"An error occurred: {e}")
                 finally:
                     cursor.close()
                     connection.close()
-                msg = 'You have successfully update!'
-                # msg =horticulturalist_id
-                # return redirect( url_for('login'))
         else:
             update_user_query="""
                 UPDATE user
@@ -265,14 +261,13 @@ def edit_user_submit(user_id):
             
                 cursor.execute(update_Hoti_query, (address, hortid, user_id))
                 connection.commit()
+                flash('You have successfully update!','success')
             except Exception as e:
                 print(f"An error occurred: {e}")
             finally:
                 cursor.close()
-                connection.close()
-            msg = 'You have successfully update!'
-        return redirect(url_for('edit_user',user_id = user_id,msg=msg))
-    
+                connection.close()            
+        return redirect(url_for('edit_user',user_id = user_id,msg=msg))   
     else:
         return redirect(url_for('login'))
     

@@ -172,8 +172,7 @@ def register():
                     cursor.close()
                     connection.close()
                 msg = 'You have successfully registered!'
-                # msg =horticulturalist_id
-                # return redirect( url_for('login'))
+                return redirect(url_for('register'))
         elif request.method == 'POST':
             # Form is empty... (no POST data)
             msg = 'Please fill out the form!'
@@ -207,11 +206,9 @@ def logout():
 
 
 @app.route("/dashboard")
-def public_dashboard():
-    # account='12345'
+def public_dashboard():   
     isLogin=session.get('loggedin')
-    username = session.get('username')
-    # userid = session.get('id')
+    username = session.get('username')  
     roleid=session.get('roleid')
     return redirect( url_for('guide'))
 
@@ -328,11 +325,6 @@ def update_user_profile():
         return redirect(url_for('login'))
 
 
-@app.route('/test')
-def test():
-    flash("Test", 'error')
-    return redirect(url_for('login'))
-
 @app.route("/profile/change_password", methods=['GET','POST'])
 # user,staff and admin can use this function.
 def change_password():
@@ -370,7 +362,6 @@ def change_password():
         else:
             random_text = secrets.token_hex(16)
             hashedPassword = hashing.hash_value(newPassword, salt=random_text)
-            msg=hashedPassword
             update_password_query="""        
                 UPDATE user
                 SET hashed_password = %s,
@@ -380,10 +371,12 @@ def change_password():
             try:
                 cursor.execute(update_password_query, (hashedPassword, random_text,userid))
                 connection.commit()
+                flash("The password has been updated.","success")
             except Exception as e:
                 print(f"An error occurred: {e}")
         cursor.close()
         connection.close()
+
     elif request.method == 'POST':
         # Form is empty... (no POST data)
         msg = 'Please fill out the form!'

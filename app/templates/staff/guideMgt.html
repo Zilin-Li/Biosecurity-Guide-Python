@@ -6,7 +6,7 @@
   {% endblock %}
   {% block rightContent %}
     <div class="d-flex justify-content-between mb-3"> 
-        {%if roleid==1 %}
+        {%if roleid == 1 %}
             <a href="{{ url_for('guide_add', role='admin') }}" class="btn btn-success btn-sm">Create Guide</a>
         {%elif roleid == 2 %}
             <a href="{{ url_for('guide_add', role='staff') }}" class="btn btn-success btn-sm">Create Guide</a>
