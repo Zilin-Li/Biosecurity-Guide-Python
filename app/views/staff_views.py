@@ -500,6 +500,46 @@ def guide_insert(role):
     flash('Guide added successfully!')  
     return redirect(url_for('guide_management',isLogin=isLogin,username=username,roleid=roleid, role=role))
 
+# delete guide
+@app.route('/<role>/guide/delete/<int:biosecurity_id>', methods
+=['POST'])
+def guide_delete(role, biosecurity_id):
+    connection, cursor = get_db_connection()
+    cursor = connection.cursor()
+    # get all images of the guide
+    image_query = """
+        SELECT 
+            bi.image_path 
+        FROM 
+            biosecurityimage bi 
+        WHERE 
+            bi.biosecurity_id = %s
+        """
+    cursor.execute(image_query, (biosecurity_id,))
+    images = cursor.fetchall()
+
+    # delete images from database
+    delete_query = """
+        DELETE FROM biosecurityimage WHERE biosecurity_id = %s
+        """
+    cursor.execute(delete_query, (biosecurity_id,))
+    connection.commit()
+
+
+    # delete guide from database
+    delete_query = """
+        DELETE FROM biosecurity WHERE id = %s
+        """
+    cursor.execute(delete_query, (biosecurity_id,))
+    connection.commit()
+    cursor.close()
+    connection.close()
+    # delete images from file system
+    for image in images:
+        os.remove(os.path.join('app/static/img/pests/', image[0]))
+    flash('Guide deleted successfully!', 'success')
+    return redirect(url_for('guide_management', role=role))
+
 
 
 
