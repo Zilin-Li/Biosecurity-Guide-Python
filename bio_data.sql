@@ -4,15 +4,16 @@ INSERT INTO position (position_name) VALUES ('Manager'), ('Assistant'), ('Superv
 INSERT INTO department (department_name) VALUES ('Administration'), ('Human Resources'), ('Operations'), ('Marketing'), ('Research and Development') ;
 
 INSERT INTO user (username, hashed_password, salt, first_name, last_name, email,phone, join_date, role_id, status) VALUES
-('testuser', '5fae31539e070a690c1b63720c25eb5b86084b5098a942c86c89c1d67157ed6b', 'abcd', 'John', 'Smith', 'johnsmith@example.com', '1234567890', '2023-01-01', 3, 1),
-('janedoe', '5fae31539e070a690c1b63720c25eb5b86084b5098a942c86c89c1d67157ed6b', 'abcd', 'Jane', 'Doe', 'janedoe@example.com', '4567890123', '2023-01-01', 3, 1),
-('testadmin', '5fae31539e070a690c1b63720c25eb5b86084b5098a942c86c89c1d67157ed6b', 'abcd', 'Michael', 'Brown', 'michaelbrown@example.com', '1234567890', '2023-01-01', 1,  1),
-('emilywilson', '5fae31539e070a690c1b63720c25eb5b86084b5098a942c86c89c1d67157ed6b', 'abcd', 'Emily', 'Wilson','emilywilson@example.com','4567890123', '2023-02-15',  2,  1),
-('sophiethompson', '5fae31539e070a690c1b63720c25eb5b86084b5098a942c86c89c1d67157ed6b', 'abcd', 'Sophie', 'Thompson','sophiethompson@example.com', '7890123456', '2023-03-15', 3, 1),
-('davidjones',  '5fae31539e070a690c1b63720c25eb5b86084b5098a942c86c89c1d67157ed6b', 'abcd','David', 'Jones', 'davidjones@example.com','3216549870', '2023-04-01',3,  1),
-('robertmartin','5fae31539e070a690c1b63720c25eb5b86084b5098a942c86c89c1d67157ed6b', 'abcd','Robert', 'Martin', 'robertmartin@example.com', '9876543210', '2023-05-01',  3, 1),
-('jenniferclark',  '5fae31539e070a690c1b63720c25eb5b86084b5098a942c86c89c1d67157ed6b', 'abcd', 'Jennifer', 'Clark','jenniferclark@example.com', '7890123456', '2023-02-15',2,  1),
-('teststaff',  '5fae31539e070a690c1b63720c25eb5b86084b5098a942c86c89c1d67157ed6b', 'abcd','Mary', 'Robinson', 'maryrobinson@example.com','3216549870', '2023-04-01', 2,  1);
+('testuser', 'a4e4f06f7f776b8ff36cf244681d248cda46b8eca866794461ad572e986ae473', '64278c2277237f0ca242944f190c52e2', 'John', 'Smith', 'johnsmith@example.com', '1234567890', '2023-01-01', 3, 1),
+('janedoe', 'a4e4f06f7f776b8ff36cf244681d248cda46b8eca866794461ad572e986ae473', '64278c2277237f0ca242944f190c52e2', 'Jane', 'Doe', 'janedoe@example.com', '4567890123', '2023-01-01', 3, 1),
+('testadmin', 'a4e4f06f7f776b8ff36cf244681d248cda46b8eca866794461ad572e986ae473', '64278c2277237f0ca242944f190c52e2', 'Michael', 'Brown', 'michaelbrown@example.com', '1234567890', '2023-01-01', 1,  1),
+('emilywilson', 'a4e4f06f7f776b8ff36cf244681d248cda46b8eca866794461ad572e986ae473', '64278c2277237f0ca242944f190c52e2', 'Emily', 'Wilson','emilywilson@example.com','4567890123', '2023-02-15',  2,  1),
+('sophiethompson', 'a4e4f06f7f776b8ff36cf244681d248cda46b8eca866794461ad572e986ae473', '64278c2277237f0ca242944f190c52e2', 'Sophie', 'Thompson','sophiethompson@example.com', '7890123456', '2023-03-15', 3, 1),
+('davidjones',  'a4e4f06f7f776b8ff36cf244681d248cda46b8eca866794461ad572e986ae473', '64278c2277237f0ca242944f190c52e2','David', 'Jones', 'davidjones@example.com','3216549870', '2023-04-01',3,  1),
+('robertmartin','a4e4f06f7f776b8ff36cf244681d248cda46b8eca866794461ad572e986ae473', '64278c2277237f0ca242944f190c52e2','Robert', 'Martin', 'robertmartin@example.com', '9876543210', '2023-05-01',  3, 1),
+('markey','a4e4f06f7f776b8ff36cf244681d248cda46b8eca866794461ad572e986ae473', '64278c2277237f0ca242944f190c52e2','Ro', 'Mart', 'robertmartn@example.com', '9876543210', '2023-05-13',  2, 1),
+('jenniferclark',  'a4e4f06f7f776b8ff36cf244681d248cda46b8eca866794461ad572e986ae473', '64278c2277237f0ca242944f190c52e2', 'Jennifer', 'Clark','jenniferclark@example.com', '7890123456', '2023-02-15',2,  1),
+('teststaff',  'a4e4f06f7f776b8ff36cf244681d248cda46b8eca866794461ad572e986ae473', '64278c2277237f0ca242944f190c52e2','Mary', 'Robinson', 'maryrobinson@example.com','3216549870', '2023-04-01', 2,  1);
 
 
 INSERT INTO horticulturalist (user_id, horticulturalist_id, address) VALUES
@@ -26,7 +27,8 @@ INSERT INTO staff (user_id, staff_id, hire_date, position_id, department_id) VAL
 (3, 'STAFF2023010100001', '2023-01-01', 1, 1),
 (4, 'STAFF2023021500001', '2023-02-15', 2, 2),
 (8, 'STAFF2023021500002', '2023-02-15', 3, 3),
-(9, 'STAFF2023040100001', '2023-04-01', 4, 4);
+(9, 'STAFF2023040100001', '2023-04-01', 4, 4),
+(10, 'STAFF2023040100002', '2023-04-02', 4, 4);
 
 
 INSERT INTO biosecurity (common_name, scientific_name, key_char, biology, impact, source_url, is_present_in_nz) VALUES
@@ -435,7 +437,7 @@ INSERT INTO biosecurityimage (biosecurity_id,image_path ,description , is_primar
 ('11', '112.jpg', ' ', 0),
 ('11', '113.jpg', ' ', 0),
 ('12', '121.jpg', ' ', 1),
-('12', '22.jpg', ' ', 0),
+('12', '122.jpg', ' ', 0),
 ('12', '123.jpg', ' ', 0),
 ('13', '131.jpg', ' ', 1),
 ('13', '132.jpg', ' ', 0),

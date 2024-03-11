@@ -69,4 +69,3 @@ CREATE TABLE biosecurityimage (
 	is_primary tinyint,
     FOREIGN KEY (biosecurity_id) REFERENCES biosecurity (id)
 );
-
