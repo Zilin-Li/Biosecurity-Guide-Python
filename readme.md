@@ -15,3 +15,17 @@ This Flask Python web application serves as a comprehensive guide to horticultur
 
 ## Data Requirements
 The application database includes profiles for at least 5 Horticulturalists, 3 Staff members, one Administrator, and details on 20 horticulture pests/diseases, distinguishing those present in and absent from NZ.
+
+## Test Username 
+
+-- **Admin**: 
+	-username: testadmin 
+	-password: P@ssw0rd
+-- **Staff**:
+	-username: teststaff 
+	-password: P@ssw0rd
+-- **User**:
+	-username: testuser 
+	-password: P@ssw0rd
+
+
