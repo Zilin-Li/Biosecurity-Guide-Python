@@ -270,7 +270,36 @@ def edit_user_submit(user_id):
         return redirect(url_for('edit_user',user_id = user_id,msg=msg))   
     else:
         return redirect(url_for('login'))
-    
+# delete user
+@app.route('/<role>/user/delete/<int:user_id>', methods=['POST'])
+def user_delete(role, user_id):
+    connection, cursor = get_db_connection()
+    cursor = connection.cursor()
+
+    # delete horticulturalist from database
+    delete_query = """
+        DELETE FROM horticulturalist WHERE user_id = %s
+        """
+    cursor.execute(delete_query, (user_id,))
+    connection.commit()
+
+    # delete staff from database
+    delete_query = """
+        DELETE FROM staff WHERE user_id = %s
+        """
+    cursor.execute(delete_query, (user_id,))
+    connection.commit()
+
+    # delete user from database
+    delete_query = """
+        DELETE FROM user WHERE id = %s
+        """
+    cursor.execute(delete_query, (user_id,))
+    connection.commit()
+    cursor.close()
+    connection.close()
+    flash('User deleted successfully!', 'success')
+    return redirect(url_for('user_management', role=role))    
 # Staff management
 @app.route('/admin/staff')
 def staff_management():
@@ -548,10 +577,11 @@ def get_staff_info(extra_query=''):
             p.position_name,
             d.department_name,
             u.role_id
-        FROM staff s
-        JOIN user u ON s.user_id = u.id
-        JOIN position p ON s.position_id = p.id
-        JOIN department d ON s.department_id = d.id
+        FROM user u
+        LEFT JOIN staff s ON s.user_id = u.id
+        LEFT JOIN position p ON s.position_id = p.id
+        LEFT JOIN department d ON s.department_id = d.id
+        WHERE u.role_id = 2 or u.role_id = 1
         """ 
     if extra_query:
         query += extra_query

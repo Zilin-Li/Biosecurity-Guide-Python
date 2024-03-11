@@ -541,36 +541,7 @@ def guide_delete(role, biosecurity_id):
     return redirect(url_for('guide_management', role=role))
 
 
-# delete user
-@app.route('/<role>/user/delete/<int:user_id>', methods=['POST'])
-def user_delete(role, user_id):
-    connection, cursor = get_db_connection()
-    cursor = connection.cursor()
 
-    # delete horticulturalist from database
-    delete_query = """
-        DELETE FROM horticulturalist WHERE user_id = %s
-        """
-    cursor.execute(delete_query, (user_id,))
-    connection.commit()
-
-    # delete staff from database
-    delete_query = """
-        DELETE FROM staff WHERE user_id = %s
-        """
-    cursor.execute(delete_query, (user_id,))
-    connection.commit()
-
-    # delete user from database
-    delete_query = """
-        DELETE FROM user WHERE id = %s
-        """
-    cursor.execute(delete_query, (user_id,))
-    connection.commit()
-    cursor.close()
-    connection.close()
-    flash('User deleted successfully!', 'success')
-    return redirect(url_for('user_management', role=role))
 
 
     
