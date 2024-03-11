@@ -396,7 +396,7 @@ def guide_image_replace(role, biosecurity_id):
         connection.close()
 
         # delete old primary image from file system
-        os.remove(os.path.join('/home/LUZilinLi1159924/Biosecurity/app/static/img/pests/', primary_image))
+        os.remove(os.path.join('/home/LUZilinLi1159924/Biosecurity/app/static/img/pests/', primary_image[0]))
     else:
         # if no primary image exists, insert new image as primary image.
         connection, cursor = get_db_connection()
