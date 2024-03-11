@@ -357,9 +357,11 @@ def guide_image_replace(role, biosecurity_id):
             bi.is_primary = 1
         """
     cursor.execute(primary_image_query, (biosecurity_id,))
-    primary_image = cursor.fetchone()[0]
+    primary_image = cursor.fetchone()
     cursor.close()
     connection.close()
+
+
     # save uploaded image to app/static/images/pests
     new_image = request.files['primary_image']
     if new_image.filename == '':
@@ -375,24 +377,40 @@ def guide_image_replace(role, biosecurity_id):
     image_path = os.path.join('/home/LUZilinLi1159924/Biosecurity/app/static/img/pests/', filename)
     new_image.save(image_path)
 
-    # update database
-    connection, cursor = get_db_connection()
-    cursor = connection.cursor()
-    # update primary image
-    update_query = """
-        UPDATE biosecurityimage 
-        SET image_path = %s 
-        WHERE biosecurity_id = %s 
-        AND is_primary = 1
-        """
-    cursor.execute(update_query, (filename, biosecurity_id))
-    connection.commit()
-    flash('Primary image replaced successfully!', 'success')    
-    cursor.close()
-    connection.close()
+    # if primary image exists, delete it from file system
+    if primary_image:
+        # update database
+        connection, cursor = get_db_connection()
+        cursor = connection.cursor()
+        # update primary image
+        update_query = """
+            UPDATE biosecurityimage 
+            SET image_path = %s 
+            WHERE biosecurity_id = %s 
+            AND is_primary = 1
+            """
+        cursor.execute(update_query, (filename, biosecurity_id))
+        connection.commit()
+        flash('Primary image replaced successfully!', 'success')    
+        cursor.close()
+        connection.close()
 
-    # delete old primary image from file system
-    os.remove(os.path.join('/home/LUZilinLi1159924/Biosecurity/app/static/img/pests/', primary_image))
+        # delete old primary image from file system
+        os.remove(os.path.join('/home/LUZilinLi1159924/Biosecurity/app/static/img/pests/', primary_image))
+    else:
+        # if no primary image exists, insert new image as primary image.
+        connection, cursor = get_db_connection()
+        cursor = connection.cursor()
+        insert_query = """
+            INSERT INTO biosecurityimage (biosecurity_id, image_path, is_primary)
+            VALUES (%s, %s, 1)
+            """
+        cursor.execute(insert_query, (biosecurity_id, filename))
+        connection.commit()
+        flash('Primary image added successfully!', 'success')    
+        cursor.close()
+        connection.close()
+
     return redirect(url_for('guide_edit', role=role, biosecurity_id=biosecurity_id))
 
 # add guide
