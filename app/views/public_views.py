@@ -14,9 +14,6 @@ from datetime import datetime, date
 import secrets
 import random
 
-
-
-
 # Change this to your secret key (can be anything, it's for extra protection)
 app.secret_key = 'your secret key'
 hashing = Hashing(app)  #create an instance of hashing
@@ -231,7 +228,8 @@ def public_dashboard():
     return redirect( url_for('guide'))
 
 # Profile - edit & change password
-# Edit profile
+# Edit profile, user, staff and admin can use this function.
+# Different role has different profile
 @app.route("/profile/edit_profile")
 def edit_user_profile():
     isLogin=session.get('loggedin')
@@ -239,8 +237,10 @@ def edit_user_profile():
     username = session.get('username')
     userid = session.get('id')
     user_profile = None 
+    # if not login, redirect to login page
     if isLogin:
         connection, cursor = get_db_connection()
+        # if the user is a public user
         if roleid == 3:            
             query = """
                 SELECT 
@@ -265,6 +265,7 @@ def edit_user_profile():
                 user_profile = cursor.fetchone()
             except Exception as e:
                 print(f"An error occurred: {e}")
+        # if the user is a staff or admin
         if roleid == 1 or  roleid == 2:
             query2 = """
                 SELECT
@@ -297,11 +298,12 @@ def edit_user_profile():
     else:  
         return redirect(url_for('login'))
     
-
+# Update user profile
 @app.route('/profile/edit_user_profile/submit', methods=['POST'])
 def update_user_profile():
     isLogin=session.get('loggedin')
     roleid=session.get('roleid')
+    # if the user is not login, redirect to login page
     if isLogin:
         connection, cursor = get_db_connection()
         first_name=request.form['first_name']
@@ -320,6 +322,7 @@ def update_user_profile():
                 SET address = %s
                 WHERE user_id = %s;
             """ 
+        # if the user is a public user
         if roleid == 3:    
             address=request.form['address']           
             try:
@@ -329,6 +332,7 @@ def update_user_profile():
                 flash("The profile has been updated.","success")       
             except Exception as e:
                 print(f"An error occurred: {e}")
+        # if the user is a staff or admin
         elif roleid == 1 or  roleid == 2:
             try:
                 cursor.execute(update_user_query, (first_name,last_name,phone,userid,)) 
@@ -342,16 +346,16 @@ def update_user_profile():
     else:
         return redirect(url_for('login'))
 
-
-@app.route("/profile/change_password", methods=['GET','POST'])
+# Change password
 # user,staff and admin can use this function.
+@app.route("/profile/change_password", methods=['GET','POST'])
 def change_password():
-    # account='12345' 
     isLogin=session.get('loggedin')
     userid = session.get('id')
     username = session.get('username')
     roleid=session.get('roleid') 
     msg = ''
+    # if the method is POST, and the form is submitted, get the data from the form
     if request.method == 'POST' and 'currentPassword' in request.form and 'newPassword' in request.form and 'confirmNewPassword' in request.form:   
         currentPassword = request.form['currentPassword']
         newPassword = request.form['newPassword']
@@ -408,15 +412,15 @@ def change_password():
     return render_template('public/changePassword.html',isLogin =isLogin,username=username,roleid=roleid,msg=msg)
 
  
-
+# Guide page, all users can access this page
 @app.route("/guide")
 def guide():
-    # account='12345'
     isLogin=session.get('loggedin')
     username = session.get('username')
     userid = session.get('id')
     roleid=session.get('roleid')
     guide_list = None
+    # if the user is not login, redirect to login page
     if not isLogin:
         return redirect(url_for('login'))
     else:
@@ -444,18 +448,16 @@ def guide():
         return render_template('public/guidePage.html',isLogin =isLogin,username=username,roleid=roleid,guide_list=guide_list)
 
 # disyplay the detail of the biosecurity
-
-
 @app.route("/guide/<int:biosecurity_id>")
 def guide_detail(biosecurity_id):
     isLogin = session.get('loggedin')
     username = session.get('username')
     userid = session.get('id')
     roleid = session.get('roleid')
-    
+    # if the user is not login, redirect to login page
     if not isLogin:
         return redirect(url_for('login'))
-    
+    # get biosecurity detail
     biosecurity_query = """
     SELECT
         b.id,
@@ -471,7 +473,7 @@ def guide_detail(biosecurity_id):
     WHERE
         b.id = %s
     """
-
+    # get biosecurity images
     images_query = """
     SELECT
         image_path,
@@ -503,9 +505,9 @@ def guide_detail(biosecurity_id):
             connection.close()
 
     # get primary image
-    
     primary_image = None
     other_images = []
+    # if there are images, get primary image, and other images
     if images:
         primary_image = next((image for image in images if image[2]), None)
     # get other images
@@ -527,7 +529,5 @@ def guide_detail(biosecurity_id):
             'primary_image': primary_image[0] if primary_image else 'default.jpg',
             'other_images': other_images    
         }
-
-    
     return render_template('public/guideDetail.html', isLogin=isLogin, username=username, roleid=roleid, guide_details=biosecurity_detail)
 

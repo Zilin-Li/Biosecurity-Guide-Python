@@ -27,5 +27,8 @@ The application database includes profiles for at least 5 Horticulturalists, 3 S
 -- **User**:
 	-username: testuser 
 	-password: P@ssw0rd
+--**Inactive**
+	-username:davidjones
+	-password:P@ssw0rd
 
 

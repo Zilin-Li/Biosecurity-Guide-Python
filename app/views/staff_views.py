@@ -16,6 +16,7 @@ import random
 import os
 import uuid
 
+# staff dashboard
 @app.route("/staff/dashboard")
 def staff_dashboard():
     isLogin=session.get('loggedin')
@@ -27,15 +28,16 @@ def staff_dashboard():
         return redirect( url_for('login'))
     
 
-       
+# display all users in table       
 @app.route('/<role>/user')
 def user_management(role):
     isLogin=session.get('loggedin')
     username = session.get('username') 
     roleid=session.get('roleid')
-    
+    # check if user is logged in
     if isLogin:
         expected_role = 'admin' if roleid == 1 else 'staff'
+        # check if user has the correct role
         if role != expected_role:
             return redirect(url_for('home'))
         else:
@@ -66,6 +68,7 @@ def user_management(role):
     else:
         return redirect(url_for('login'))
 
+# display user detail
 @app.route('/<role>/user/detail/<user_id>')
 def user_detail(role,user_id):  
     isLogin=session.get('loggedin')
@@ -115,8 +118,10 @@ def guide_management(role):
     username = session.get('username') 
     roleid=session.get('roleid')
     guide_list = []
+    # check if user is logged in
     if isLogin:
         expected_role = 'admin' if roleid == 1 else 'staff'
+        # check if user has the correct role
         if role != expected_role:
             return redirect(url_for('login'))
         else:
@@ -147,21 +152,23 @@ def guide_management(role):
         return redirect(url_for('login'))
 
 
-
+# display guide edit page
 @app.route('/<role>/guide/edit/<int:biosecurity_id>', methods=['GET'])
 def guide_edit(role,biosecurity_id):
     
     isLogin=session.get('loggedin')
     username = session.get('username') 
     roleid=session.get('roleid')
-   
+    # check if user is logged in
     if 'loggedin' not in session:
         return redirect(url_for('login'))
+    # check if user has the correct role
     if roleid !=1 and roleid !=2:
         return redirect(url_for('login'))
 
     connection, cursor = get_db_connection()
     cursor = connection.cursor()
+    # query to get guide details
     info_query="""SELECT 
         b.id, 
         b.common_name, 
@@ -173,6 +180,7 @@ def guide_edit(role,biosecurity_id):
         b.is_present_in_nz 
         FROM biosecurity b 
         WHERE b.id = %s"""
+    # query to get primary image
     primary_image_query = """
         SELECT 
             bi.image_path 
@@ -183,6 +191,7 @@ def guide_edit(role,biosecurity_id):
         AND 
             bi.is_primary = 1
         """
+    # query to get all images
     image_query = """
         SELECT 
             bi.id,
@@ -199,13 +208,11 @@ def guide_edit(role,biosecurity_id):
     guide_info = cursor.fetchone()
     cursor.execute(primary_image_query, (biosecurity_id,))
     primary_image = cursor.fetchone()
-
     cursor.execute(image_query, (biosecurity_id,))
     images = cursor.fetchall()
     cursor.close()
     connection.close()
     primary_image = primary_image if primary_image else ('',)
-
 
     # format data
     guide_details = {
@@ -222,14 +229,16 @@ def guide_edit(role,biosecurity_id):
     }
     return render_template('staff/guideEdit.html',isLogin=isLogin,username=username,roleid=roleid,guide_details=guide_details)
 
-# update guide
+# update guide details
 @app.route('/<role>/guide/edit/<int:biosecurity_id>', methods=['POST'])
 def guide_update(role,biosecurity_id):
     isLogin=session.get('loggedin')
     username = session.get('username')
     roleid=session.get('roleid')
+    # check if user is logged in
     if 'loggedin' not in session:
         return redirect(url_for('login'))
+    # get form data
     common_name = request.form['common_name']
     scientific_name = request.form['scientific_name']
     key_char = request.form['key_char']
@@ -239,6 +248,7 @@ def guide_update(role,biosecurity_id):
     is_present_in_nz = request.form['is_present_in_nz']
     connection, cursor = get_db_connection()
     cursor = connection.cursor()
+    # update guide details
     update_query = """
         UPDATE biosecurity 
         SET 
@@ -308,7 +318,7 @@ def guide_image_add(role, biosecurity_id):
         flash('No file part', 'error')
         return redirect(request.url)
     new_images = request.files.getlist('new_image')
-
+    # check if new images has one or more images
     for image in new_images:
         if image.filename == '':
             flash('No selected file', 'error')
@@ -321,7 +331,7 @@ def guide_image_add(role, biosecurity_id):
         random_filename = str(uuid.uuid4())
         _, ext = os.path.splitext(image.filename)
         filename = random_filename + ext
-
+        # save uploaded image to app/static/images/pests
         image_path = os.path.join('/home/LUZilinLi1159924/Biosecurity/app/static/img/pests/', filename)
         image.save(image_path)
         
@@ -340,7 +350,7 @@ def guide_image_add(role, biosecurity_id):
     
     return redirect(url_for('guide_edit', role=role, biosecurity_id=biosecurity_id))
 
-# replace primary image
+# replace primary image, if primary image exists, delete it from file system
 @app.route('/<role>/guide/image/replace/<int:biosecurity_id>', methods=['POST'])
 def guide_image_replace(role, biosecurity_id):
     # get primary image
@@ -361,7 +371,6 @@ def guide_image_replace(role, biosecurity_id):
     cursor.close()
     connection.close()
 
-
     # save uploaded image to app/static/images/pests
     new_image = request.files['primary_image']
     if new_image.filename == '':
@@ -370,7 +379,7 @@ def guide_image_replace(role, biosecurity_id):
     if not allowed_file(new_image.filename):
         flash('Invalid file type')
         return
-
+    # generate a random filename by uuid
     random_filename = str(uuid.uuid4())
     _, ext = os.path.splitext(new_image.filename)
     filename = random_filename + ext
@@ -413,27 +422,27 @@ def guide_image_replace(role, biosecurity_id):
 
     return redirect(url_for('guide_edit', role=role, biosecurity_id=biosecurity_id))
 
-# add guide
+# add guide, display add guide page
 @app.route('/<role>/guide/add', methods=['GET'])
 def guide_add(role):
     isLogin=session.get('loggedin')
     username = session.get('username') 
     roleid=session.get('roleid')
-
+    # check if user is logged in, if not redirect to login page
     if 'loggedin' not in session:
         return redirect(url_for('login'))
     return render_template('staff/guideAdd.html',isLogin=isLogin,username=username,roleid=roleid)
 
-# insert guide
+# insert guide, insert guide details and images to database
 @app.route('/<role>/guide/add/submit', methods=['POST'])
 def guide_insert(role):
     isLogin=session.get('loggedin')
     username = session.get('username') 
     roleid=session.get('roleid')
-    
+    # check if user is logged in, if not redirect to login page
     if 'loggedin' not in session: 
         return redirect(url_for('login'))
-
+    # get form data, insert guide details to database
     common_name = request.form['common_name']
     scientific_name = request.form['scientific_name']
     key_char = request.form['key_char']
@@ -444,7 +453,7 @@ def guide_insert(role):
   
     connection, cursor = get_db_connection()
     cursor = connection.cursor()
-
+    # insert guide details
     insert_query = """
         INSERT INTO biosecurity 
         (common_name, scientific_name, key_char, biology, impact, source_url, is_present_in_nz) 
@@ -491,7 +500,7 @@ def guide_insert(role):
         flash('No images uploaded.')
         # redirect to guide add page
         return redirect(url_for('guide_add', role=role))
-        
+    #check if new images has one or more images   
     for image in new_images:
         if image.filename == '':
             flash('No selected file', 'error')

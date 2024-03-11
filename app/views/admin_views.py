@@ -17,10 +17,10 @@ import random
 app.secret_key = 'your secret key'
 hashing = Hashing(app) 
 
-
+# Admin dashboard
 @app.route("/admin/dashboard")
 def admin_dashboard():
-    
+    # Check if user is loggedin, if not redirect to login page
     isLogin=session.get('loggedin')
     username = session.get('username') 
     roleid=session.get('roleid')
@@ -28,14 +28,18 @@ def admin_dashboard():
         return redirect( url_for('home'))
     return render_template("admin/dashboard.html",isLogin=isLogin,username=username,roleid=roleid)
 
+# Display user management page,only admin can access
+# User management,user means horticulturalist,not include staff and admin.
 @app.route('/admin/user/add', methods=['GET', 'POST'])
 def add_user():
     isLogin=session.get('loggedin')
     username = session.get('username') 
     roleid=session.get('roleid')   
     msg=''
+    # Check if user is loggedin, if not redirect to login page
     if isLogin:
         if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form and 'confirmPassword'in request.form:
+            # Get form values
             newusername = request.form['username']
             password = request.form['password']
             confirm_password = request.form['confirmPassword']
@@ -93,7 +97,7 @@ def add_user():
                 try:
                     cursor.execute('INSERT INTO user VALUES (NULL,%s,%s, %s, %s, %s, %s,%s, %s, %s, %s)', (newusername, hashed, random_text, first_name, last_name, email, phone, join_date, user_role_id, status))
                     new_user_id = cursor.lastrowid
-                   
+                   # Insert horticulturalist into horticulturalist table
                     cursor.execute('''
                         INSERT INTO horticulturalist (user_id, horticulturalist_id,address) 
                             VALUES (%s, %s,%s)
@@ -105,13 +109,14 @@ def add_user():
                 finally:
                     cursor.close()
                     connection.close()
-
+        
         elif request.method == 'POST':
             msg = 'Please fill out the form!'
         return render_template("admin/userAdd.html",isLogin=isLogin,username=username,roleid=roleid, msg=msg)
     else:
         return redirect(url_for('login'))
 
+# this function is used to generate horticulturalist id and staff id
 def generate_user_num(roleName):
     # Gets the year, month, day, hour, second of the current time
     timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
@@ -121,12 +126,16 @@ def generate_user_num(roleName):
     user_id = f"{roleName}{timestamp}{random_number}"
     return user_id
 
+# display edit user page
 @app.route('/admin/user/edit/<int:user_id>', methods=['GET'])
 def edit_user(user_id):
+    # Check if user is loggedin, if not redirect to login page
     isLogin=session.get('loggedin')
     username = session.get('username') 
     roleid=session.get('roleid')   
-    if isLogin:   
+     # Check if user is loggedin, if not redirect to login page
+    if isLogin:  
+        # Get user information 
         query = """
         SELECT 
             u.id, 
@@ -158,12 +167,14 @@ def edit_user(user_id):
     else:
         return redirect(url_for('login'))
 
+# update user information
 @app.route('/admin/user/update/<int:user_id>', methods=['POST'])
 def edit_user_submit(user_id): 
     isLogin=session.get('loggedin')
     username = session.get('username') 
     roleid=session.get('roleid')   
     msg=''
+    # Check if user is loggedin, if not redirect to login page
     if isLogin:
         first_name=request.form.get('firstName')
         last_name=request.form.get('lastName')     
@@ -193,12 +204,13 @@ def edit_user_submit(user_id):
         finally:
             cursor.close()
             connection.close()
-
+        # If account exists show error and validation checks
         if account:
             msg = 'Horticulturalist id already exists!'
             return redirect(url_for('edit_user',user_id = user_id,msg=msg))
         
-
+        # Check if user updates password, if so, check if the password matches the confirm password
+        # if not, only update user information
         if newPassword and confirmPassword:
             if newPassword !=confirmPassword:
 
@@ -239,6 +251,7 @@ def edit_user_submit(user_id):
                 finally:
                     cursor.close()
                     connection.close()
+        # if user does not update password, only update user information
         else:
             update_user_query="""
                 UPDATE user
@@ -270,6 +283,7 @@ def edit_user_submit(user_id):
         return redirect(url_for('edit_user',user_id = user_id,msg=msg))   
     else:
         return redirect(url_for('login'))
+
 # delete user
 @app.route('/admin/user/delete/<int:user_id>', methods=['GET'])
 def user_delete(user_id):
@@ -300,13 +314,14 @@ def user_delete(user_id):
     connection.close()
     flash('User deleted successfully!', 'success')
     return redirect(url_for('user_management',role='admin'))    
+
 # Staff management
 @app.route('/admin/staff')
 def staff_management():
     isLogin=session.get('loggedin')
     username = session.get('username') 
     roleid=session.get('roleid')
-    
+    # Check if user is loggedin, if not redirect to login page
     if not isLogin:
         return redirect(url_for('login'))
     else:
@@ -321,7 +336,7 @@ def staff_detail(user_id):
     isLogin=session.get('loggedin')
     username = session.get('username') 
     roleid=session.get('roleid')
-    
+    # Check if user is loggedin, if not redirect to login page
     if isLogin:
         if roleid != 1:
             return redirect(url_for('home'))
@@ -332,6 +347,7 @@ def staff_detail(user_id):
     else:
         return redirect(url_for('login')) 
 
+# Edit staff information,display edit staff page,only admin can access
 @app.route('/admin/staff/edit/<int:user_id>', methods=['GET'])
 def staff_edit(user_id):
     isLogin=session.get('loggedin')
@@ -346,6 +362,7 @@ def staff_edit(user_id):
     else:
         return redirect(url_for('login'))
 
+# Update staff information,submit edit staff page,only admin can access
 @app.route('/admin/staff/update/<int:user_id>', methods=['POST'])
 def edit_staff_submit(user_id):
     isLogin=session.get('loggedin')
@@ -462,6 +479,7 @@ def edit_staff_submit(user_id):
         return redirect(url_for('staff_edit',user_id = user_id))
     return redirect(url_for('login'))
 
+# Add staff,display add staff page,only admin can access
 @app.route('/admin/staff/add', methods=['GET', 'POST'])
 def add_staff():
     isLogin=session.get('loggedin')
@@ -484,7 +502,6 @@ def add_staff():
             status_value = 1 if selected_status == 'Active' else 0
             user_role_id = request.form.get('isAdmin')
             
-
                # Check if account exists using MySQL
             query = """
             SELECT 
@@ -520,8 +537,7 @@ def add_staff():
                 
             elif newPassword !=confirmPassword:
                 flash('Password confirmation failed.!','error')
-            
-                
+              
             else:
                 #Automatic salt generation
                 random_text = secrets.token_hex(16)
@@ -536,8 +552,7 @@ def add_staff():
                 
                 # Account doesnt exists and the form data is valid, now insert new account into accounts table
                 hashed = hashing.hash_value(newPassword, salt=random_text)
-                
-
+            
                 connection, cursor = get_db_connection()   
                 try:
                     cursor.execute('INSERT INTO user VALUES (NULL,%s,%s, %s, %s, %s, %s,%s, %s, %s, %s)', (newusername, hashed, random_text, first_name, last_name, email, phone, join_date, user_role_id, status_value))
@@ -562,6 +577,7 @@ def add_staff():
     else:
         return redirect(url_for('login'))
 
+# Delete staff,only admin can access
 @app.route('/admin/staff/delete/<int:user_id>', methods=['GET'])
 def staff_delete(user_id):
     connection, cursor = get_db_connection()
@@ -584,7 +600,8 @@ def staff_delete(user_id):
     connection.close()
     flash('User deleted successfully!', 'success')
     return redirect(url_for('staff_management'))   
-    
+
+# this function is used to get staff information    
 def get_staff_info(extra_query=''):
     query = """
         SELECT 
@@ -620,7 +637,7 @@ def get_staff_info(extra_query=''):
         cursor.close()
         connection.close()
     return staff_list
-
+# this function is used to get position list,use to display in add staff and edit staff page
 def get_position_list():
     query = """
         SELECT 
@@ -638,7 +655,7 @@ def get_position_list():
         cursor.close()
         connection.close()
     return position_list  
-
+# this function is used to get department list,use to display in add staff and edit staff page
 def get_department_list():
     query = """
         SELECT 
