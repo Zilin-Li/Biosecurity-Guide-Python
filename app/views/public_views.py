@@ -47,7 +47,8 @@ def login():
                 u.username, 
                 u.hashed_password, 
                 u.salt, 
-                u.role_id 
+                u.role_id,
+                u.status
             FROM 
                 user u
             WHERE username = %s;
@@ -65,6 +66,10 @@ def login():
                 connection.close()
             
             if account is not None:
+                # block inactive user
+                if account[5] == 0:
+                    flash("Your account is inactive, please contact the administrator.","error")
+                    return redirect(url_for('login'))
                 password = account[2]
                 if hashing.check_value(password, user_password, salt=account[3]):
                 # If account exists in accounts table 
