@@ -291,7 +291,7 @@ def guide_image_delete(role, image_id):
     connection.close()
 
     # delete image from file system
-    os.remove(os.path.join('app/static/img/pests/', image_path))
+    os.remove(os.path.join(app.config['IMAGE_PATH'], image_path))
     return redirect(url_for('guide_edit', role=role, biosecurity_id=biosecurity_id))
 
 
@@ -322,7 +322,7 @@ def guide_image_add(role, biosecurity_id):
         _, ext = os.path.splitext(image.filename)
         filename = random_filename + ext
 
-        image_path = os.path.join('app/static/img/pests/', filename)
+        image_path = os.path.join(app.config['IMAGE_PATH'], filename)
         image.save(image_path)
         
         # save image to database
@@ -372,7 +372,7 @@ def guide_image_replace(role, biosecurity_id):
     random_filename = str(uuid.uuid4())
     _, ext = os.path.splitext(new_image.filename)
     filename = random_filename + ext
-    image_path = os.path.join('app/static/img/pests/', filename)
+    image_path = os.path.join(app.config['IMAGE_PATH'], filename)
     new_image.save(image_path)
 
     # update database
@@ -392,7 +392,7 @@ def guide_image_replace(role, biosecurity_id):
     connection.close()
 
     # delete old primary image from file system
-    os.remove(os.path.join('app/static/img/pests/', primary_image))
+    os.remove(os.path.join(app.config['IMAGE_PATH'], primary_image))
     return redirect(url_for('guide_edit', role=role, biosecurity_id=biosecurity_id))
 
 # add guide
@@ -449,7 +449,7 @@ def guide_insert(role):
     random_filename = str(uuid.uuid4())
     _, ext = os.path.splitext(primary_image.filename)
     filename = random_filename + ext
-    image_path = os.path.join('app/static/img/pests/', filename)
+    image_path = os.path.join(app.config['IMAGE_PATH'], filename)
     primary_image.save(image_path)
 
     # save image to database
@@ -484,7 +484,7 @@ def guide_insert(role):
         random_filename = str(uuid.uuid4())
         _, ext = os.path.splitext(image.filename)
         filename = random_filename + ext
-        image_path = os.path.join('app/static/img/pests/', filename)
+        image_path = os.path.join(app.config['IMAGE_PATH'], filename)
         image.save(image_path)
         # save image to database
         connection, cursor = get_db_connection()
@@ -536,7 +536,7 @@ def guide_delete(role, biosecurity_id):
     connection.close()
     # delete images from file system
     for image in images:
-        os.remove(os.path.join('app/static/img/pests/', image[0]))
+        os.remove(os.path.join(app.config['IMAGE_PATH'], image[0]))
     flash('Guide deleted successfully!', 'success')
     return redirect(url_for('guide_management', role=role))
 

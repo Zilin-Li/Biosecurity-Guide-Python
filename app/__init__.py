@@ -7,6 +7,15 @@ from .connect import *
 
 app = Flask(__name__)
 
+class Config(object):
+    IMAGE_PATH = '/home/LUZilinLi1159924/Biosecurity/app/static/img/pests'
+
+
+app.config.from_object(Config)
+
+
+image_path = app.config['IMAGE_PATH']
+
 def get_db_connection():
     connection = mysql.connector.connect(
         user=connect.dbuser,
