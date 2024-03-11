@@ -271,8 +271,8 @@ def edit_user_submit(user_id):
     else:
         return redirect(url_for('login'))
 # delete user
-@app.route('/<role>/user/delete/<int:user_id>', methods=['POST'])
-def user_delete(role, user_id):
+@app.route('/admin/user/delete/<int:user_id>', methods=['GET'])
+def user_delete(user_id):
     connection, cursor = get_db_connection()
     cursor = connection.cursor()
 
@@ -283,12 +283,12 @@ def user_delete(role, user_id):
     cursor.execute(delete_query, (user_id,))
     connection.commit()
 
-    # delete staff from database
-    delete_query = """
-        DELETE FROM staff WHERE user_id = %s
-        """
-    cursor.execute(delete_query, (user_id,))
-    connection.commit()
+    # # delete staff from database
+    # delete_query = """
+    #     DELETE FROM staff WHERE user_id = %s
+    #     """
+    # cursor.execute(delete_query, (user_id,))
+    # connection.commit()
 
     # delete user from database
     delete_query = """
@@ -299,7 +299,7 @@ def user_delete(role, user_id):
     cursor.close()
     connection.close()
     flash('User deleted successfully!', 'success')
-    return redirect(url_for('user_management', role=role))    
+    return redirect(url_for('user_management',role='admin'))    
 # Staff management
 @app.route('/admin/staff')
 def staff_management():
@@ -326,7 +326,8 @@ def staff_detail(user_id):
         if roleid != 1:
             return redirect(url_for('home'))
         else:
-            staff_info = get_staff_info(f' WHERE u.id = {user_id}')
+            staff_info = get_staff_info(f' AND u.id = {user_id}')
+            
             return render_template('admin/staffDetail.html',isLogin=isLogin,username=username,roleid=roleid,staff_info=staff_info)
     else:
         return redirect(url_for('login')) 
@@ -338,7 +339,7 @@ def staff_edit(user_id):
     roleid=session.get('roleid')   
     msg=''
     if isLogin:   
-        staff_info = get_staff_info(f' WHERE u.id = {user_id}')
+        staff_info = get_staff_info(f' AND u.id = {user_id}')
         position_list = get_position_list()
         department_list = get_department_list()
         return render_template('admin/staffEdit.html',isLogin=isLogin,username=username,roleid=roleid,msg=msg,staff_info=staff_info,position_list=position_list,department_list=department_list)
@@ -561,6 +562,29 @@ def add_staff():
     else:
         return redirect(url_for('login'))
 
+@app.route('/admin/staff/delete/<int:user_id>', methods=['GET'])
+def staff_delete(user_id):
+    connection, cursor = get_db_connection()
+    cursor = connection.cursor()
+
+    # delete staff from database
+    delete_query = """
+        DELETE FROM staff WHERE user_id = %s
+        """
+    cursor.execute(delete_query, (user_id,))
+    connection.commit()
+
+    # delete user from database
+    delete_query = """
+        DELETE FROM user WHERE id = %s
+        """
+    cursor.execute(delete_query, (user_id,))
+    connection.commit()
+    cursor.close()
+    connection.close()
+    flash('User deleted successfully!', 'success')
+    return redirect(url_for('staff_management'))   
+    
 def get_staff_info(extra_query=''):
     query = """
         SELECT 
@@ -581,7 +605,7 @@ def get_staff_info(extra_query=''):
         LEFT JOIN staff s ON s.user_id = u.id
         LEFT JOIN position p ON s.position_id = p.id
         LEFT JOIN department d ON s.department_id = d.id
-        WHERE u.role_id = 2 or u.role_id = 1
+        WHERE u.role_id != 3
         """ 
     if extra_query:
         query += extra_query

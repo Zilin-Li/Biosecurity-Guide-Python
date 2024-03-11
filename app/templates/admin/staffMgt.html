@@ -43,7 +43,7 @@
                             {% if roleid == 1 %}
                                 <a href="{{ url_for('staff_detail', user_id=staff[0])}}" class="btn btn-primary btn-sm"><i class="bi bi-eye-fill"></i> Details</a>
                                 <a href="{{ url_for('staff_edit', user_id=staff[0])}}" class="btn btn-success btn-sm"><i class="bi bi-pencil-fill"></i> Edit</a>
-                                <a href="{{ url_for('edit_user', user_id= staff[0]) }}" class="btn btn-danger btn-sm"><i class="bi bi-trash-fill"></i>  Delete</a>
+                                <a href="{{ url_for('staff_delete', user_id= staff[0]) }}" class="btn btn-danger btn-sm"><i class="bi bi-trash-fill"></i>  Delete</a>
                             {% endif %}
                         </td>
                     </tr>
