@@ -35,31 +35,32 @@
                         <a class="nav-link" href="/admin/dashboard"><i class="bi bi-emoji-smile mx-1"
                                 style="font-size: 24px;"></i>Welcome admin: {{username}}! </a>
                     </li>
-                             
+
                     {%elif roleid==2%}
                     <li class="nav-item">
                         <a class="nav-link" href="/staff/dashboard"><i class="bi bi-emoji-smile mx-1"
                                 style="font-size: 24px;"></i>Welcome staff: {{username}}!</a>
                     </li>
-                    
-                 
+
+
                     {% elif roleid==3 %}
                     <li class="nav-item">
                         <a class="nav-link" href="/dashboard"><i class="bi bi-emoji-smile mx-1"
                                 style="font-size: 24px;"></i>
                             Welcome {{username}}! </a>
                     </li>
-                   
+
                     {%endif%}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownProfile" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                          <i class="bi bi-person-circle mx-1" style="font-size: 24px;"></i>Profile
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownProfile" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle mx-1" style="font-size: 24px;"></i>Profile
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownProfile">
-                          <li><a class="dropdown-item" href="/profile/edit_profile">Edit Profile</a></li>
-                          <li><a class="dropdown-item" href="/profile/change_password">Change Password</a></li>
+                            <li><a class="dropdown-item" href="/profile/edit_profile">Edit Profile</a></li>
+                            <li><a class="dropdown-item" href="/profile/change_password">Change Password</a></li>
                         </ul>
-                    </li>             
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/logout"><i class="bi bi-box-arrow-right mx-1"
                                 style="font-size: 24px;"></i> Logout</a>
@@ -82,23 +83,23 @@
     <div>
         {% with messages = get_flashed_messages(with_categories=True) %}
         {% for category, message in messages %}
-            {% if category == "success" %}
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            {% elif category == "error" %}
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            {% endif %}
+        {% if category == "success" %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% elif category == "error" %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endif %}
         {% endfor %}
-      {% endwith %}
+        {% endwith %}
     </div>
     <section class="content">
-        
-    {% block content %}{% endblock %}
+
+        {% block content %}{% endblock %}
     </section>
 
     <!-- Footer -->

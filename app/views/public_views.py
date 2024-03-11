@@ -21,7 +21,7 @@ import random
 app.secret_key = 'your secret key'
 hashing = Hashing(app)  #create an instance of hashing
 
-
+# Home page  
 @app.route("/")
 def home(): 
     isLogin=session.get('loggedin')
@@ -29,6 +29,7 @@ def home():
     roleid=session.get('roleid')
     return render_template("public/home.html", isLogin=isLogin, username=username,roleid=roleid)
 
+# login page
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     isLogin=session.get('loggedin')
@@ -64,15 +65,16 @@ def login():
             finally:
                 cursor.close()
                 connection.close()
-            
+            # If account exists in accounts table 
             if account is not None:
                 # block inactive user
                 if account[5] == 0:
                     flash("Your account is inactive, please contact the administrator.","error")
                     return redirect(url_for('login'))
                 password = account[2]
+                #  Check if the password is correct
                 if hashing.check_value(password, user_password, salt=account[3]):
-                # If account exists in accounts table 
+                
                 # Create session data, we can access this data in other routes
                     session['loggedin'] = True
                     session['id'] = account[0]
@@ -81,6 +83,7 @@ def login():
 
                     username = session.get('username')
                     userid = session.get('id')
+                    # Accoding to the role, redirect to different dashboard page
                     if account[4] == 1:
                         return redirect( url_for('admin_dashboard'))                  
                     elif account[4] == 2:   
@@ -99,7 +102,7 @@ def login():
     else:
         return redirect(url_for('home'))
 
-
+# register page
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     isLogin=session.get('loggedin')
@@ -138,7 +141,7 @@ def register():
             finally:
                 cursor.close()
                 connection.close()
-            # msg = account
+            
             # If account exists show error and validation checks
             if account:
                 if account[0]== username:
@@ -161,16 +164,19 @@ def register():
                 last_name = None
                 phone = None
                 join_date =datetime.now()
+                # Only public user can register
                 role_id = 3
                 status = 1
-                # Automatically generate a user id
+                # Automatically generate a horticulturalist id
                 horticulturalist_id = generate_user_num('HORT')
                 # Account doesnt exists and the form data is valid, now insert new account into accounts table
                 hashed = hashing.hash_value(password, salt=random_text)
                 connection, cursor = get_db_connection()
                 try:
+                    # Insert into user table
                     cursor.execute('INSERT INTO user VALUES (NULL,%s,%s, %s, %s, %s, %s,%s, %s, %s, %s)', (username, hashed, random_text, first_name, last_name, email, phone, join_date, role_id, status))
                     user_id = cursor.lastrowid
+                    # Insert into horticulturalist table
                     cursor.execute('''
                         INSERT INTO horticulturalist (user_id, horticulturalist_id) 
                             VALUES (%s, %s)
@@ -191,6 +197,7 @@ def register():
     else:
          return redirect(url_for('home'))
 
+# Generate a user id
 def generate_user_num(roleName):
     # Gets the year, month, day, hour, second of the current time
     timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
@@ -200,6 +207,7 @@ def generate_user_num(roleName):
     user_id = f"{roleName}{timestamp}{random_number}"
     return user_id
 
+# logout function
 @app.route('/logout')
 def logout():
     isLogin=session.get('loggedin')
@@ -214,7 +222,7 @@ def logout():
     else:
         return redirect(url_for('home'))
 
-
+# Public dashboard page 
 @app.route("/dashboard")
 def public_dashboard():   
     isLogin=session.get('loggedin')

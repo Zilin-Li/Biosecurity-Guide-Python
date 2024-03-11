@@ -586,6 +586,7 @@ def get_staff_info(extra_query=''):
     if extra_query:
         query += extra_query
     connection, cursor = get_db_connection()
+    staff_list = []
     try:
         cursor.execute(query)
         staff_list = cursor.fetchall()
