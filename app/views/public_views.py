@@ -108,6 +108,11 @@ def register():
             password = request.form['password']
             confirm_password = request.form['confirmPassword']
             email = request.form['email']
+            
+            # validate password, at least 8 characters, 1 uppercase, 1 lowercase, 1 number, 1 special character
+            if not re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$', password):
+                flash("Password must contain at least 8 characters, 1 uppercase, 1 lowercase, 1 number, 1 special character.","error")
+
             # Check if account exists using MySQL
             query = """
             SELECT 
@@ -338,6 +343,12 @@ def change_password():
         currentPassword = request.form['currentPassword']
         newPassword = request.form['newPassword']
         confirmNewPassword = request.form['confirmNewPassword']
+
+        # validate password, at least 8 characters, 1 uppercase, 1 lowercase, 1 number, 1 special character
+        if not re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$', newPassword):
+            flash("Password must contain at least 8 characters, 1 uppercase, 1 lowercase, 1 number, 1 special character.","error")
+            return render_template('public/changePassword.html',isLogin =isLogin,username=username,roleid=roleid,msg=msg)
+
         # Get the stored password from database
         get_password_query = """
             SELECT 
